@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package uims.ums.service;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "uims/api/user/service";
+
+
+service User {
+    rpc GetUser(GetUserReq) returns (GetUserReply) {
+        option (google.api.http) = {
+            get: "/ums/user/{uid}"
+        };
+    }
+
+    rpc GetUserByUsername(GetUserByUsernameReq) returns (GetUserByUsernameReply) {
+        option (google.api.http) = {
+            get: "/ums/user/{username}"
+        };
+    }
+
+    rpc Save(SaveUserReq) returns (SaveUserReply) {
+        option (google.api.http) = {
+            post: "/ums/user/save"
+            body: "*"
+        };
+    }
+
+    rpc CreateUser(CreateUserReq) returns (CreateUserReply) {
+        option (google.api.http) = {
+            post: "/ums/user/create"
+            body: "*"
+        };
+    }
+
+    rpc ListUser(ListUserReq) returns (ListUserReply) {
+        option (google.api.http) = {
+            get: "/ums/user/list"
+        };
+    }
+}
+
+message GetUserReq {
+    int64 uid = 1;
+}
+
+message GetUserReply {
+    UserInfo user_info = 1;
+}
+
+message GetUserByUsernameReq {
+    string username = 1;
+}
+
+message GetUserByUsernameReply {
+    UserInfo user_info = 1;
+}
+
+message CreateUserReq {
+    string username = 1;
+    string password = 2;
+}
+
+message CreateUserReply {
+    int64 id = 1;
+    string username = 2;
+}
+
+message ListUserReq {
+    int64 uid = 1;
+    int64 page_size = 2;
+    int64 page_num = 3;
+    int64 status = 4;
+    int64 del_flag = 5;
+    string username = 6;
+}
+
+message ListUserReply {
+    repeated UserInfo results = 1;
+}
+
+message SaveUserReq {
+    string username = 1;
+}
+
+message SaveUserReply {
+    UserInfo user_info = 1;
+}
+
+message UserInfo {
+    int64 uid = 1;
+    string username = 2;
+    int64 del_flag = 3;
+    int64 status = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
