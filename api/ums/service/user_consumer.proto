@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package uims.ums.service;
+
+option go_package = "uims/api/user/service";
+
+message CreateUserMsg {
+  int64 uid = 1;
+  string username = 2;
+}

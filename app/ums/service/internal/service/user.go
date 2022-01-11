@@ -28,7 +28,16 @@ func (s *UserService) Save(ctx context.Context, req *umsService.SaveUserReq) (*u
 }
 func (s *UserService) CreateUser(ctx context.Context, req *umsService.CreateUserReq) (*umsService.CreateUserReply, error) {
 
-	return s.uc.CreateUser(ctx, &biz.User{Username: req.Username})
+	userInfo, err := s.uc.CreateUser(ctx, &biz.User{Username: req.Username})
+	if err != nil {
+		return nil, err
+	}
+
+	rep := &umsService.CreateUserReply{
+		Id:       userInfo.Id,
+		Username: userInfo.Username,
+	}
+	return rep, err
 }
 func (s *UserService) ListUser(ctx context.Context, req *umsService.ListUserReq) (*umsService.ListUserReply, error) {
 	return &umsService.ListUserReply{}, nil

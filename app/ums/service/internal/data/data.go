@@ -32,6 +32,10 @@ type Data struct {
 	kc    sarama.Consumer
 }
 
+func (d Data) GetDB() *gorm.DB {
+	return d.db
+}
+
 // NewData .
 func NewData(db *gorm.DB, cache *redis.Client, kp sarama.AsyncProducer, kc sarama.Consumer, logger log.Logger) (*Data, func(), error) {
 	d := &Data{
@@ -70,6 +74,7 @@ func NewDB(c *conf.Data, logger log.Logger) *gorm.DB {
 		return db
 	}
 
+	log.Infof("init DB...")
 	err = db.Use(&gp.OpentracingPlugin{})
 	if err != nil {
 		log.Fatal(err)

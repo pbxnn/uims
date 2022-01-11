@@ -8,6 +8,7 @@ import (
 	"uims/app/ums/service/internal/biz"
 	"uims/app/ums/service/internal/conf"
 	"uims/app/ums/service/internal/data"
+	"uims/app/ums/service/internal/data/dao"
 	"uims/app/ums/service/internal/server"
 	"uims/app/ums/service/internal/service"
 
@@ -19,5 +20,12 @@ import (
 
 // initApp init kratos application.
 func initApp(*conf.Server, *conf.Registry, *conf.Data, log.Logger) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(
+		server.ProviderSet,
+		data.ProviderSet,
+		biz.ProviderSet,
+		service.ProviderSet,
+		dao.ProviderSet,
+		newApp,
+	))
 }

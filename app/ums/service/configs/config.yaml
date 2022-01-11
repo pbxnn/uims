@@ -1,5 +1,5 @@
 trace:
-  endpoint: http://127.0.0.1:14268/api/traces
+  endpoint: http://152.136.131.96:14268/api/traces
 server:
   grpc:
     addr: 127.0.0.1:9000
@@ -7,13 +7,13 @@ server:
 data:
   database:
     driver: mysql
-    source: root:123456@tcp(127.0.0.1:3306)/uims?parseTime=true
+    source: pears:cy7m0yp@,FperzI45@tcp(152.136.131.96:3306)/zxn_test?parseTime=true
   redis:
-    addr: 127.0.0.1:6379
-    read_timeout: 1s
-    write_timeout: 1s
+    addr: 152.136.131.96:6380
+    read_timeout: 3s
+    write_timeout: 3s
   kafka:
     addrs:
-      - 127.0.0.1:9092
+      - 152.136.131.96:9092
 auth:
   key: some-secret-key

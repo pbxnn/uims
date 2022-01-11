@@ -3,8 +3,9 @@ package biz
 import (
 	"context"
 	"errors"
-	umsApi "uims/api/ums/api"
+
 	umsService "uims/api/ums/service"
+	"uims/app/ums/service/internal/data/dao"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -14,16 +15,16 @@ var (
 )
 
 type User struct {
-	Id       int64
+	UId      int64
 	Username string
 }
 
 type UserRepo interface {
-	CreateUser(ctx context.Context, u *User) (*umsService.CreateUserReply, error)
-	GetUser(ctx context.Context, id int64) (*umsService.GetUserReply, error)
-	GetUserByUsername(ctx context.Context, username string) (*umsService.GetUserByUsernameReply, error)
-	Save(ctx context.Context, u *User) (*umsService.SaveUserReply, error)
-	ListUser(ctx context.Context, u *User) (*umsService.ListUserReply, error)
+	CreateUser(ctx context.Context, u *User) (*dao.UmsUser, error)
+	GetUser(ctx context.Context, id int64) (*dao.UmsUser, error)
+	GetUserByUsername(ctx context.Context, username string) (*dao.UmsUser, error)
+	Save(ctx context.Context, u *User) (*dao.UmsUser, error)
+	ListUser(ctx context.Context, u *User) ([]*dao.UmsUser, error)
 }
 
 type UserUseCase struct {
@@ -35,7 +36,7 @@ func NewUserUseCase(repo UserRepo, logger log.Logger) *UserUseCase {
 	return &UserUseCase{repo: repo, log: log.NewHelper(log.With(logger, "module", "usecase/user"))}
 }
 
-func (uc *UserUseCase) Save(ctx context.Context, in *umsApi.SaveUserReq) (*umsService.SaveUserReply, error) {
+func (uc *UserUseCase) Save(ctx context.Context, in *umsService.SaveUserReq) (*dao.UmsUser, error) {
 	user := &User{
 		Username: in.Username,
 	}
@@ -47,7 +48,7 @@ func (uc *UserUseCase) Save(ctx context.Context, in *umsApi.SaveUserReq) (*umsSe
 	return data, nil
 }
 
-func (uc *UserUseCase) CreateUser(ctx context.Context, u *User) (*umsService.CreateUserReply, error) {
+func (uc *UserUseCase) CreateUser(ctx context.Context, u *User) (*dao.UmsUser, error) {
 	out, err := uc.repo.CreateUser(ctx, u)
 	if err != nil {
 		return nil, err
@@ -55,11 +56,11 @@ func (uc *UserUseCase) CreateUser(ctx context.Context, u *User) (*umsService.Cre
 	return out, nil
 }
 
-func (uc *UserUseCase) GetUser(ctx context.Context, id int64) (*umsService.GetUserReply, error) {
+func (uc *UserUseCase) GetUser(ctx context.Context, id int64) (*dao.UmsUser, error) {
 	return uc.repo.GetUser(ctx, id)
 }
 
-func (uc *UserUseCase) GetUserByUsername(ctx context.Context, in *umsApi.GetUserByUsernameReq) (*umsService.GetUserByUsernameReply, error) {
+func (uc *UserUseCase) GetUserByUsername(ctx context.Context, in *umsService.GetUserByUsernameReq) (*dao.UmsUser, error) {
 	user, err := uc.repo.GetUserByUsername(ctx, in.Username)
 	if err != nil {
 		//todo: handle error
@@ -68,7 +69,7 @@ func (uc *UserUseCase) GetUserByUsername(ctx context.Context, in *umsApi.GetUser
 	return user, nil
 }
 
-func (uc *UserUseCase) ListUser(ctx context.Context, u *User) (*umsService.ListUserReply, error) {
+func (uc *UserUseCase) ListUser(ctx context.Context, u *User) ([]*dao.UmsUser, error) {
 	out, err := uc.repo.ListUser(ctx, u)
 	if err != nil {
 		return nil, err

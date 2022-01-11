@@ -11,6 +11,7 @@ import (
 	"uims/app/ums/service/internal/biz"
 	"uims/app/ums/service/internal/conf"
 	"uims/app/ums/service/internal/data"
+	"uims/app/ums/service/internal/data/dao"
 	"uims/app/ums/service/internal/server"
 	"uims/app/ums/service/internal/service"
 )
@@ -27,7 +28,8 @@ func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Da
 	if err != nil {
 		return nil, nil, err
 	}
-	userRepo := data.NewUserRepo(dataData, logger)
+	umsUserModel := dao.NewUmsUserModel(db, logger)
+	userRepo := data.NewUserRepo(dataData, umsUserModel, logger)
 	userUseCase := biz.NewUserUseCase(userRepo, logger)
 	userService := service.NewUserService(userUseCase, logger)
 	grpcServer := server.NewGRPCServer(confServer, logger, userService)
