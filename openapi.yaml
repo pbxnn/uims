@@ -1,0 +1,879 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/apps/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /uims/org/company:
+        get:
+            tags:
+                - Company
+            operationId: Company_GetCompanyList
+            parameters:
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: pageNum
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetCompanyListReply'
+        put:
+            tags:
+                - Company
+            operationId: Company_UpdateCompany
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateCompanyReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateCompanyReply'
+        post:
+            tags:
+                - Company
+            operationId: Company_CreateCompany
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateCompanyReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateCompanyReply'
+        patch:
+            tags:
+                - Company
+            operationId: Company_OrderCompany
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrderCompanyReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/OrderCompanyReply'
+    /uims/org/company/batch:
+        post:
+            tags:
+                - Company
+            operationId: Company_BatchCreateCompany
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateCompanyReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BatchCreateCompanyReply'
+    /uims/org/company/{companyId}:
+        get:
+            tags:
+                - Company
+            operationId: Company_GetCompany
+            parameters:
+                - name: companyId
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetCompanyReply'
+        delete:
+            tags:
+                - Company
+            operationId: Company_DeleteCompany
+            parameters:
+                - name: companyId
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DelCompanyReply'
+    /uims/orgms/department:
+        get:
+            tags:
+                - Department
+            operationId: Department_GetDepartmentList
+            parameters:
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: pageNum
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetCompanyListReply'
+        put:
+            tags:
+                - Department
+            operationId: Department_UpdateDepartment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateDepartmentReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateDepartmentReply'
+        post:
+            tags:
+                - Department
+            operationId: Department_CreateDepartment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateDepartmentReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateDepartmentReply'
+    /uims/orgms/department/batch:
+        post:
+            tags:
+                - Department
+            operationId: Department_BatchCreateDepartment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/BatchCreateDepartmentReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BatchCreateDepartmentReply'
+    /uims/orgms/department/merge:
+        patch:
+            tags:
+                - Department
+            operationId: Department_MergeDepartment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/MergeDepartmentReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MergeDepartmentReply'
+    /uims/orgms/department/move:
+        patch:
+            tags:
+                - Department
+            operationId: Department_MoveDepartment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/MoveDepartmentReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MoveDepartmentReply'
+    /uims/orgms/department/order:
+        patch:
+            tags:
+                - Department
+            operationId: Department_OrderDepartment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrderDepartmentReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/OrderDepartmentReply'
+    /uims/orgms/department/user:
+        patch:
+            tags:
+                - Department
+            operationId: Department_AssignDepartmentUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AssignDepartmentUserReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AssignDepartmentUserReply'
+    /uims/orgms/department/{departmentId}:
+        get:
+            tags:
+                - Department
+            operationId: Department_GetDepartment
+            parameters:
+                - name: departmentId
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetDepartmentReply'
+        delete:
+            tags:
+                - Department
+            operationId: Department_DeleteDepartment
+            parameters:
+                - name: departmentId
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DelDepartmentReply'
+    /uims/orgms/user:
+        post:
+            tags:
+                - User
+            operationId: User_CreateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUserReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserReply'
+    /uims/orgms/user/batch:
+        post:
+            tags:
+                - User
+            operationId: User_BatchCreateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/BatchCreateUserReq'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BatchCreateUserReply'
+    /uims/orgms/user/{uid}:
+        get:
+            tags:
+                - User
+            operationId: User_GetUserInfoReq
+            parameters:
+                - name: uid
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserReply'
+        delete:
+            tags:
+                - User
+            operationId: User_DelUser
+            parameters:
+                - name: uid
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DelUserReply'
+components:
+    schemas:
+        AssignDepartmentUserReply:
+            type: object
+            properties:
+                departmentId:
+                    type: integer
+                    format: int64
+                uids:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        AssignDepartmentUserReq:
+            type: object
+            properties:
+                departmentId:
+                    type: integer
+                    format: int64
+                uids:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        AttrReq:
+            type: object
+            properties:
+                attrName:
+                    type: integer
+                    format: int64
+                attrValue:
+                    type: string
+        BatchCreateCompanyReply:
+            type: object
+            properties:
+                data:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/CompanyInfo'
+                total:
+                    type: integer
+                    format: int64
+        BatchCreateDepartmentReply:
+            type: object
+            properties:
+                data:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/DepartmentInfo'
+        BatchCreateDepartmentReq:
+            type: object
+            properties:
+                departmentList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CreateDepartmentReq'
+        BatchCreateUserReply:
+            type: object
+            properties:
+                data:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/CreateUserReq'
+        BatchCreateUserReq:
+            type: object
+            properties:
+                userList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CreateUserReq'
+        CompanyInfo:
+            type: object
+            properties:
+                companyId:
+                    type: integer
+                    format: int64
+                companyName:
+                    type: string
+                companyCode:
+                    type: string
+                companyType:
+                    type: integer
+                    format: int64
+                companyDesc:
+                    type: string
+                seq:
+                    type: integer
+                    format: int64
+                isVirtual:
+                    type: integer
+                    format: int64
+                isDel:
+                    type: integer
+                    format: int64
+                startTime:
+                    type: integer
+                    format: int64
+                endTime:
+                    type: integer
+                    format: int64
+                createdAt:
+                    type: integer
+                    format: int64
+                updatedAt:
+                    type: integer
+                    format: int64
+                ext:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttrReq'
+        CreateCompanyReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/CompanyInfo'
+        CreateCompanyReq:
+            type: object
+            properties:
+                companyName:
+                    type: string
+                companyCode:
+                    type: string
+                companyType:
+                    type: integer
+                    format: int64
+                companyDesc:
+                    type: string
+                isVirtual:
+                    type: integer
+                    format: int64
+                status:
+                    type: integer
+                    format: int64
+                startTime:
+                    type: integer
+                    format: int64
+                endTime:
+                    type: integer
+                    format: int64
+                ext:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttrReq'
+        CreateDepartmentReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/DepartmentInfo'
+        CreateDepartmentReq:
+            type: object
+            properties:
+                companyId:
+                    type: integer
+                    format: int64
+                departmentName:
+                    type: string
+                departmentDesc:
+                    type: string
+                departmentType:
+                    type: integer
+                    format: int64
+                startTime:
+                    type: integer
+                    format: int64
+                endTime:
+                    type: integer
+                    format: int64
+                status:
+                    type: integer
+                    format: int64
+                isVirtual:
+                    type: integer
+                    format: int64
+                parentId:
+                    type: integer
+                    format: int64
+                ext:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttrReq'
+        CreateUserReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/UserInfo'
+        CreateUserReq:
+            type: object
+            properties:
+                companyId:
+                    type: integer
+                    format: int64
+                departmentId:
+                    type: integer
+                    format: int64
+                isAdmin:
+                    type: integer
+                    format: int64
+                isVirtual:
+                    type: integer
+                    format: int64
+                phone:
+                    type: integer
+                    format: int64
+                realName:
+                    type: string
+                email:
+                    type: string
+                ext:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttrReq'
+        DelCompanyReply:
+            type: object
+            properties:
+                companyId:
+                    type: integer
+                    format: int64
+        DelDepartmentReply:
+            type: object
+            properties:
+                departmentId:
+                    type: integer
+                    format: int64
+        DelUserReply:
+            type: object
+            properties:
+                uid:
+                    type: integer
+                    format: int64
+        DepartmentInfo:
+            type: object
+            properties:
+                departmentId:
+                    type: integer
+                    format: int64
+                departmentName:
+                    type: string
+                departmentDesc:
+                    type: string
+                departmentType:
+                    type: integer
+                    format: int64
+                isVirtual:
+                    type: integer
+                    format: int64
+                parentId:
+                    type: integer
+                    format: int64
+                companyId:
+                    type: integer
+                    format: int64
+                depth:
+                    type: integer
+                    format: int64
+                seq:
+                    type: integer
+                    format: int64
+                status:
+                    type: integer
+                    format: int64
+                startTime:
+                    type: integer
+                    format: int64
+                endTime:
+                    type: integer
+                    format: int64
+                createdAt:
+                    type: integer
+                    format: int64
+                updatedAt:
+                    type: integer
+                    format: int64
+                ext:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttrReq'
+        GetCompanyListReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CompanyInfo'
+                total:
+                    type: integer
+                    format: int64
+                pageSize:
+                    type: integer
+                    format: int64
+                pageNum:
+                    type: integer
+                    format: int64
+        GetCompanyReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/CompanyInfo'
+        GetDepartmentReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/DepartmentInfo'
+        GetUserReply:
+            type: object
+            properties:
+                userList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CreateUserReq'
+        MergeDepartmentReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/DepartmentInfo'
+        MergeDepartmentReq:
+            type: object
+            properties:
+                departmentId:
+                    type: integer
+                    format: int64
+                toDepartmentId:
+                    type: integer
+                    format: int64
+        MoveDepartmentReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/DepartmentInfo'
+        MoveDepartmentReq:
+            type: object
+            properties:
+                departmentId:
+                    type: integer
+                    format: int64
+                fromParentId:
+                    type: integer
+                    format: int64
+                toParentId:
+                    type: integer
+                    format: int64
+        OrderCompanyReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        OrderCompanyReq:
+            type: object
+            properties:
+                companyIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        OrderDepartmentReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        OrderDepartmentReq:
+            type: object
+            properties:
+                parentId:
+                    type: integer
+                    format: int64
+                departmentIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        UpdateCompanyReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/CompanyInfo'
+        UpdateCompanyReq:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/CompanyInfo'
+        UpdateDepartmentReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/DepartmentInfo'
+        UpdateDepartmentReq:
+            type: object
+            properties:
+                companyId:
+                    type: integer
+                    format: int64
+                departmentName:
+                    type: string
+                departmentDesc:
+                    type: string
+                departmentType:
+                    type: integer
+                    format: int64
+                startTime:
+                    type: integer
+                    format: int64
+                endTime:
+                    type: integer
+                    format: int64
+                status:
+                    type: integer
+                    format: int64
+                isVirtual:
+                    type: integer
+                    format: int64
+                parentId:
+                    type: integer
+                    format: int64
+                ext:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttrReq'
+        UserInfo:
+            type: object
+            properties:
+                baseInfo:
+                    $ref: '#/components/schemas/UserInfo'
+                extraInfo:
+                    $ref: '#/components/schemas/UserInfo_ExtraInfo'
+        UserInfo:
+            type: object
+            properties:
+                uid:
+                    type: integer
+                    format: int64
+                realName:
+                    type: string
+                userName:
+                    type: string
+                phone:
+                    type: integer
+                    format: int64
+                avatar:
+                    type: string
+                delFlag:
+                    type: integer
+                    format: int64
+                status:
+                    type: integer
+                    format: int64
+                originAppId:
+                    type: integer
+                    format: int64
+                createdAt:
+                    type: string
+                    format: RFC3339
+                updatedAt:
+                    type: string
+                    format: RFC3339
+        UserInfo_ExtraInfo:
+            type: object
+            properties:
+                isVirtual:
+                    type: integer
+                    format: int64
+                areaId:
+                    type: integer
+                    format: int64
+                delFlag:
+                    type: integer
+                    format: int64
+                ext:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AttrReq'
+                createdAt:
+                    type: integer
+                    format: int64
+                updatedAt:
+                    type: integer
+                    format: int64
+tags:
+    - name: Company
+    - name: Department
+    - name: User

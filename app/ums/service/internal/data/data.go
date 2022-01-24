@@ -50,18 +50,18 @@ func NewData(db *gorm.DB, cache *redis.Client, kp sarama.AsyncProducer, kc saram
 		d.kc.Close()
 	}
 
-	go func() {
-		pc, err := d.kc.ConsumePartition("uims_ums", 1, sarama.OffsetNewest)
-		if err != nil {
-			d.log.Warnf("init partition consumer err:%s", err.Error())
-			return
-		}
-		for {
-			msg := <-pc.Messages()
-			d.log.Infof("Consumed message:[%s], offset:[%d]\n", msg.Value, msg.Offset)
-		}
-
-	}()
+	//go func() {
+	//	pc, err := d.kc.ConsumePartition("uims_ums", 1, sarama.OffsetNewest)
+	//	if err != nil {
+	//		d.log.Warnf("init partition consumer err:%s", err.Error())
+	//		return
+	//	}
+	//	for {
+	//		msg := <-pc.Messages()
+	//		d.log.Infof("Consumed message:[%s], offset:[%d]\n", msg.Value, msg.Offset)
+	//	}
+	//
+	//}()
 
 	return d, cleanup, nil
 }

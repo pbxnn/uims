@@ -1,16 +1,15 @@
 package server
 
 import (
+	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/google/wire"
-	"uims/app/ums/service/internal/conf"
-
-	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	consulAPI "github.com/hashicorp/consul/api"
+	"uims/app/orgms/api/internal/conf"
 )
 
 // ProviderSet is server providers.
-var ProviderSet = wire.NewSet(NewGRPCServer, NewRegistrar, NewKafkaConsumer)
+var ProviderSet = wire.NewSet(NewHTTPServer, NewRegistrar)
 
 func NewRegistrar(conf *conf.Registry) registry.Registrar {
 	c := consulAPI.DefaultConfig()

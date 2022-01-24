@@ -4,7 +4,7 @@ package kratos.api;
 
 import "google/protobuf/duration.proto";
 
-option go_package = "server-service/internal/conf;conf";
+option go_package = "uims/app/ums/api/internal/conf";
 
 message Bootstrap {
     Trace trace = 1;

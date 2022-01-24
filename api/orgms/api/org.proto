@@ -1,0 +1,464 @@
+syntax = "proto3";
+
+package uims.orgms.api;
+
+import "google/api/annotations.proto";
+//import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+import "api/ums/rpc/ums.proto";
+
+option go_package = "uims/api/orgms/api";
+
+service Company {
+  rpc CreateCompany(CreateCompanyReq) returns (CreateCompanyReply) {
+    option (google.api.http) = {
+      post: "/uims/org/company"
+      body: "*"
+    };
+  }
+
+  rpc BatchCreateCompany(CreateCompanyReq) returns (BatchCreateCompanyReply) {
+    option (google.api.http) = {
+      post: "/uims/org/company/batch"
+      body: "*"
+    };
+  }
+
+  rpc GetCompanyList(GetCompanyListReq) returns (GetCompanyListReply) {
+    option (google.api.http) = {
+      get: "/uims/org/company"
+    };
+  }
+
+  rpc GetCompany(GetCompanyReq) returns (GetCompanyReply) {
+    option (google.api.http) = {
+      get: "/uims/org/company/{company_id}"
+    };
+  }
+
+  rpc UpdateCompany(UpdateCompanyReq) returns (UpdateCompanyReply) {
+    option (google.api.http) = {
+      put: "/uims/org/company"
+      body: "*"
+    };
+  }
+
+  rpc DeleteCompany(DelCompanyReq) returns (DelCompanyReply) {
+    option (google.api.http) = {
+      delete: "/uims/org/company/{company_id}"
+    };
+  }
+
+  rpc OrderCompany(OrderCompanyReq) returns (OrderCompanyReply) {
+    option (google.api.http) = {
+      patch: "/uims/org/company"
+      body: "*"
+    };
+  }
+}
+
+message CreateCompanyReq {
+  string           company_name = 1 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  string           company_code = 2 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  int64            company_type = 3;
+  string           company_desc = 4;
+  int64            is_virtual   = 5 [(validate.rules).int64 = {ignore_empty: true, in: [0, 1]}];
+  int64            status       = 6 [(validate.rules).int64 = {ignore_empty: true, in: [0, 1]}];
+  int64            start_time   = 7;
+  int64            end_time     = 8;
+  repeated AttrReq ext          = 9;
+}
+
+message CreateCompanyReply {
+  CompanyInfo data = 1;
+}
+
+message AttrReq {
+  int64  attr_name  = 1;
+  string attr_value = 2;
+}
+
+
+message BatchCreateCompanyReq {
+  repeated CreateCompanyReq company_list = 1;
+}
+
+message BatchCreateCompanyReply {
+  map<int64, CompanyInfo> data  = 1;
+  int64                   total = 2;
+}
+
+message GetCompanyListReq {
+  int64 page_size = 1;
+  int64 page_num  = 2;
+}
+
+message GetCompanyListReply {
+  repeated CompanyInfo data      = 1;
+  int64                total     = 2;
+  int64                page_size = 3;
+  int64                page_num  = 4;
+}
+
+message GetCompanyReq {
+  int64 company_id = 1;
+}
+
+message GetCompanyReply {
+  CompanyInfo data = 1;
+}
+
+message UpdateCompanyReq {
+  CompanyInfo data = 1;
+}
+
+message UpdateCompanyReply {
+  CompanyInfo data = 1;
+}
+
+message DelCompanyReq {
+  int64 company_id = 1;
+}
+
+message DelCompanyReply {
+  int64 company_id = 1;
+}
+
+message OrderCompanyReq {
+  repeated int64 company_ids = 1;
+}
+
+message OrderCompanyReply {
+  repeated int64 data = 1;
+}
+
+message CompanyInfo {
+  int64            company_id   = 1;
+  string           company_name = 2;
+  string           company_code = 3;
+  int64            company_type = 4;
+  string           company_desc = 5;
+  int64            seq          = 6;
+  int64            is_virtual   = 7;
+  int64            is_del       = 8;
+  int64            start_time   = 9;
+  int64            end_time     = 10;
+  int64            created_at   = 11;
+  int64            updated_at   = 12;
+  repeated AttrReq ext          = 13;
+}
+
+service Department {
+  rpc GetDepartment(GetDepartmentReq) returns (GetDepartmentReply) {
+    option (google.api.http) = {
+      get: "/uims/orgms/department/{department_id}"
+    };
+  }
+
+
+
+  rpc GetDepartmentList(GetDepartmentListReq) returns (GetCompanyListReply) {
+    option (google.api.http) = {
+      get: "/uims/orgms/department"
+    };
+  }
+
+  rpc CreateDepartment(CreateDepartmentReq) returns (CreateDepartmentReply) {
+    option (google.api.http) = {
+      post: "/uims/orgms/department"
+      body: "*"
+    };
+  }
+
+  rpc BatchCreateDepartment(BatchCreateDepartmentReq) returns (BatchCreateDepartmentReply) {
+    option (google.api.http) = {
+      post: "/uims/orgms/department/batch"
+      body: "*"
+    };
+  }
+
+  rpc UpdateDepartment(UpdateDepartmentReq) returns (UpdateDepartmentReply) {
+    option (google.api.http) = {
+      put: "/uims/orgms/department"
+      body: "*"
+    };
+  }
+
+  rpc DeleteDepartment(DelDepartmentReq) returns (DelDepartmentReply) {
+    option (google.api.http) = {
+      delete: "/uims/orgms/department/{department_id}"
+    };
+  }
+
+  rpc AssignDepartmentUser(AssignDepartmentUserReq) returns (AssignDepartmentUserReply) {
+    option (google.api.http) = {
+      patch: "/uims/orgms/department/user"
+      body: "*"
+    };
+  }
+
+  rpc OrderDepartment(OrderDepartmentReq) returns (OrderDepartmentReply) {
+    option (google.api.http) = {
+      patch: "/uims/orgms/department/order"
+      body: "*"
+    };
+  }
+
+  rpc MoveDepartment(MoveDepartmentReq) returns (MoveDepartmentReply) {
+    option (google.api.http) = {
+      patch: "/uims/orgms/department/move"
+      body: "*"
+    };
+  }
+
+  rpc MergeDepartment(MergeDepartmentReq) returns (MergeDepartmentReply) {
+    option (google.api.http) = {
+      patch: "/uims/orgms/department/merge"
+      body: "*"
+    };
+  }
+}
+
+message CreateDepartmentReq {
+  int64            company_id      = 1;
+  string           department_name = 2;
+  string           department_desc = 3;
+  int64            department_type = 4;
+  int64            start_time      = 5;
+  int64            end_time        = 6;
+  int64            status          = 7;
+  int64            is_virtual      = 8;
+  int64            parent_id       = 9;
+  repeated AttrReq ext             = 10;
+}
+
+message CreateDepartmentReply {
+  DepartmentInfo data = 1;
+}
+
+message BatchCreateDepartmentReq {
+  repeated CreateDepartmentReq department_list = 1;
+}
+
+message BatchCreateDepartmentReply {
+  map<int64, DepartmentInfo> data = 1;
+}
+
+message UpdateDepartmentReq {
+  int64            company_id      = 1;
+  string           department_name = 2;
+  string           department_desc = 3;
+  int64            department_type = 4;
+  int64            start_time      = 5;
+  int64            end_time        = 6;
+  int64            status          = 7;
+  int64            is_virtual      = 8;
+  int64            parent_id       = 9;
+  repeated AttrReq ext             = 10;
+}
+
+message UpdateDepartmentReply {
+  DepartmentInfo data = 1;
+}
+
+message GetDepartmentReq {
+  int64 department_id = 1;
+}
+
+message GetDepartmentReply {
+  DepartmentInfo data = 1;
+}
+
+message GetDepartmentListReq {
+  int64 page_size = 1;
+  int64 page_num  = 2;
+}
+
+message GetDepartmentListReply {
+  repeated DepartmentInfo data      = 1;
+  int64                   total     = 2;
+  int64                   page_size = 3;
+  int64                   page_num  = 4;
+}
+
+message DelDepartmentReq {
+  int64 department_id = 1;
+}
+
+message DelDepartmentReply {
+  int64 department_id = 1;
+}
+
+message AssignDepartmentUserReq {
+  int64          department_id = 1;
+  repeated int64 uids          = 2;
+}
+
+message AssignDepartmentUserReply {
+  int64          department_id = 1;
+  repeated int64 uids          = 2;
+}
+
+message MoveDepartmentReq {
+  int64 department_id  = 1;
+  int64 from_parent_id = 2;
+  int64 to_parent_id   = 3;
+}
+
+message MoveDepartmentReply {
+  DepartmentInfo data = 1;
+}
+
+message MergeDepartmentReq {
+  int64 department_id    = 1;
+  int64 to_department_id = 2;
+}
+
+message MergeDepartmentReply {
+  DepartmentInfo data = 1;
+}
+
+message OrderDepartmentReq {
+  int64          parent_id      = 1;
+  repeated int64 department_ids = 2;
+}
+
+message OrderDepartmentReply {
+  repeated int64 data = 1;
+}
+
+message DepartmentInfo {
+  int64            department_id   = 1;
+  string           department_name = 2;
+  string           department_desc = 3;
+  int64            department_type = 4;
+  int64            is_virtual      = 5;
+  int64            parent_id       = 6;
+  int64            company_id      = 7;
+  int64            depth           = 8;
+  int64            seq             = 9;
+  int64            status          = 10;
+  int64            start_time      = 11;
+  int64            end_time        = 12;
+  int64            created_at      = 13;
+  int64            updated_at      = 14;
+  repeated AttrReq ext             = 15;
+}
+
+service User {
+  rpc CreateUser(CreateUserReq) returns (CreateUserReply) {
+    option (google.api.http) = {
+      post: "/uims/orgms/user"
+      body: "*"
+    };
+  }
+
+  rpc BatchCreateUser(BatchCreateUserReq) returns (BatchCreateUserReply) {
+    option (google.api.http) = {
+      post: "/uims/orgms/user/batch",
+      body: "*"
+    };
+  }
+
+  rpc DelUser(DelUserReq) returns (DelUserReply) {
+    option (google.api.http) = {
+      delete: "/uims/orgms/user/{uid}"
+    };
+  }
+
+  rpc GetUserInfoReq (GetUserReq) returns (GetUserReply) {
+    option (google.api.http) = {
+      get: "/uims/orgms/user/{uid}"
+    };
+  }
+}
+
+message CreateUserReq {
+  int64            company_id    = 1;
+  int64            department_id = 2;
+  int64            is_admin      = 3;
+  int64            is_virtual    = 4;
+  int64            phone         = 5;
+  string           real_name     = 6;
+  string           email         = 7;
+  repeated AttrReq ext           = 8;
+}
+
+message CreateUserReply {
+  UserInfo data = 1;
+}
+
+message BatchCreateUserReq {
+  repeated CreateUserReq user_list = 1;
+}
+
+message BatchCreateUserReply {
+  map<int64, CreateUserReq> data = 1;
+}
+
+message DelUserReq {
+  int64 uid = 1;
+}
+
+message DelUserReply {
+  int64 uid = 1;
+}
+
+message UpdateUserReq {
+  int64            uid           = 1;
+  int64            company_id    = 2;
+  int64            department_id = 3;
+  int64            is_admin      = 4;
+  int64            is_virtual    = 5;
+  int64            phone         = 6;
+  string           real_name     = 7;
+  string           email         = 8;
+  repeated AttrReq ext           = 9;
+}
+
+message UpdateUserReply {
+  repeated CreateUserReq user_list = 1;
+}
+
+message GetUserReq {
+  int64 uid = 1;
+}
+
+message GetUserReply {
+  repeated CreateUserReq user_list = 1;
+}
+
+message GetUserListReq {
+  int64 page_size     = 1;
+  int64 page_num      = 2;
+  int64 department_id = 3;
+}
+
+message GetUserListReply {
+  repeated UserInfo data      = 1;
+  int64             total     = 2;
+  int64             page_size = 3;
+  int64             page_num  = 4;
+}
+
+message UserInfo {
+  uims.ums.rpc.UserInfo base_info  = 1;
+  ExtraInfo             extra_info = 2;
+
+  message ExtraInfo {
+    int64            is_virtual = 1;
+    int64            area_id    = 2;
+    int64            del_flag   = 3;
+    repeated AttrReq ext        = 4;
+    int64            created_at = 5;
+    int64            updated_at = 6;
+  }
+
+  message OrgInfo {
+    int64 company_id    = 1;
+    int64 department_id = 2;
+    int64 is_admin      = 3;
+    int64 is_show       = 4;
+    int64 del_flag      = 5;
+  }
+}

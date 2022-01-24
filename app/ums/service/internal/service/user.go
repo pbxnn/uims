@@ -2,16 +2,24 @@ package service
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
-	"uims/app/ums/service/internal/biz"
 
 	umsService "uims/api/ums/service"
+	"uims/app/ums/service/internal/biz"
+
+	"github.com/go-kratos/kratos/v2/log"
 )
+
+type UserService struct {
+	umsService.UnimplementedUserServer
+
+	uc  *biz.UserUseCase
+	log *log.Helper
+}
 
 func NewUserService(uc *biz.UserUseCase, logger log.Logger) *UserService {
 	return &UserService{
 		uc:  uc,
-		log: log.NewHelper(log.With(logger, "module", "service/server-service"))}
+		log: log.NewHelper(log.With(logger, "module", "UserService"))}
 }
 
 func (s *UserService) GetUser(ctx context.Context, req *umsService.GetUserReq) (*umsService.GetUserReply, error) {

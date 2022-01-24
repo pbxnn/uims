@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package uims.orgms.api;
+import "errors/errors.proto";
+
+option go_package = "uims/api/orgms/api";
+option java_multiple_files = true;
+
+enum UserServiceErrorReason {
+  option (errors.default_code) = 500;
+
+  UNKNOWN_ERROR = 0;
+  COMPANY_NOT_EXIST = 1 [(errors.code) = 404];
+}
