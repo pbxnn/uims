@@ -7,7 +7,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	umsService "uims/api/ums/service"
+	umsService "uims/api/ums/rpc"
 	"uims/app/ums/rpc/internal/conf"
 	"uims/app/ums/rpc/internal/service"
 )

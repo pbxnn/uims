@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
-	umsService "uims/api/ums/service"
+	umsService "uims/api/ums/rpc"
 	"uims/app/ums/rpc/internal/biz"
 )
 

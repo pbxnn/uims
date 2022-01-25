@@ -9,7 +9,7 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/google/wire"
-	umsService "uims/api/ums/service"
+	umsService "uims/api/ums/rpc"
 )
 
 // ProviderSet is data providers.
