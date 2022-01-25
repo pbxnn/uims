@@ -41,6 +41,10 @@ func NewOrgmsCompanyModel(conn *gorm.DB, logger log.Logger) *OrgmsCompanyModel {
 	}
 }
 
+func (m *OrgmsCompanyModel) GetConn(ctx context.Context) *gorm.DB {
+	return m.conn.WithContext(ctx)
+}
+
 func (m *OrgmsCompanyModel) Insert(ctx context.Context, data *OrgmsCompany) error {
 	return m.conn.WithContext(ctx).Create(data).Error
 }
@@ -92,5 +96,9 @@ func (m *OrgmsCompanyModel) FindListByConds(ctx context.Context, conds map[strin
 }
 
 func (m *OrgmsCompanyModel) Update(ctx context.Context, data *OrgmsCompany, conds map[string]interface{}) error {
+	return m.conn.WithContext(ctx).Where(conds).Updates(data).Error
+}
+
+func (m *OrgmsCompanyModel) UpdateMap(ctx context.Context, data map[string]interface{}, conds map[string]interface{}) error {
 	return m.conn.WithContext(ctx).Where(conds).Updates(data).Error
 }

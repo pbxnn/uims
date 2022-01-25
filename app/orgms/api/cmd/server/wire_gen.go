@@ -8,7 +8,9 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"uims/app/orgms/api/internal/biz"
 	"uims/app/orgms/api/internal/conf"
+	"uims/app/orgms/api/internal/data"
 	"uims/app/orgms/api/internal/server"
 	"uims/app/orgms/api/internal/service"
 )
@@ -16,8 +18,11 @@ import (
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, registry *conf.Registry, data *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	companyService := service.NewCompanyService()
+func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+	discovery := data.NewDiscovery(registry)
+	companyClient := data.NewCompanyClient(discovery)
+	companyDO := biz.NewCompanyDO(companyClient, logger)
+	companyService := service.NewCompanyService(companyDO, logger)
 	departmentService := service.NewDepartmentService()
 	userService := service.NewUserService()
 	httpServer := server.NewHTTPServer(confServer, companyService, departmentService, userService, logger)

@@ -1939,7 +1939,7 @@ func (m *CompanyInfo) validate(all bool) error {
 
 	// no validation rules for IsVirtual
 
-	// no validation rules for IsDel
+	// no validation rules for DelFlag
 
 	// no validation rules for StartTime
 

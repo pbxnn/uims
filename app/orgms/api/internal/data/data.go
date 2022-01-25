@@ -3,7 +3,7 @@ package data
 import (
 	"context"
 
-	umsService "uims/api/ums/service"
+	"uims/api/orgms/rpc"
 	"uims/app/orgms/api/internal/conf"
 
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
@@ -17,16 +17,33 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewDiscovery)
+var ProviderSet = wire.NewSet(
+	NewData,
+	NewDiscovery,
+	NewCompanyClient,
+	NewDepartmentClient,
+	NewUserClient,
+)
 
 // Data .
 type Data struct {
-	logger log.Logger
+	logger           log.Logger
+	companyClient    rpc.CompanyClient
+	departmentClient rpc.DepartmentClient
+	userClient       rpc.UserClient
 }
 
-// NewData .
-func NewData(logger log.Logger) (*Data, func(), error) {
-	d := &Data{logger: logger}
+// NewData
+func NewData(
+	companyClient rpc.CompanyClient,
+	departmentClient rpc.DepartmentClient,
+	userClient rpc.UserClient,
+) (*Data, func(), error) {
+	d := &Data{
+		companyClient:    companyClient,
+		departmentClient: departmentClient,
+		userClient:       userClient,
+	}
 	return d, nil, nil
 }
 
@@ -42,10 +59,10 @@ func NewDiscovery(conf *conf.Registry) registry.Discovery {
 	return r
 }
 
-func NewOrgRpcClient(r registry.Discovery) umsService.UserClient {
+func NewCompanyClient(r registry.Discovery) rpc.CompanyClient {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery:///uims.ums.service"),
+		grpc.WithEndpoint("discovery:///uims.orgms.rpc"),
 		grpc.WithDiscovery(r),
 		grpc.WithMiddleware(
 			tracing.Client(),
@@ -55,6 +72,40 @@ func NewOrgRpcClient(r registry.Discovery) umsService.UserClient {
 	if err != nil {
 		panic(err)
 	}
-	c := umsService.NewUserClient(conn)
+	c := rpc.NewCompanyClient(conn)
+	return c
+}
+
+func NewDepartmentClient(r registry.Discovery) rpc.DepartmentClient {
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		grpc.WithEndpoint("discovery:///uims.orgms.rpc"),
+		grpc.WithDiscovery(r),
+		grpc.WithMiddleware(
+			tracing.Client(),
+			recovery.Recovery(),
+		),
+	)
+	if err != nil {
+		panic(err)
+	}
+	c := rpc.NewDepartmentClient(conn)
+	return c
+}
+
+func NewUserClient(r registry.Discovery) rpc.UserClient {
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		grpc.WithEndpoint("discovery:///uims.orgms.rpc"),
+		grpc.WithDiscovery(r),
+		grpc.WithMiddleware(
+			tracing.Client(),
+			recovery.Recovery(),
+		),
+	)
+	if err != nil {
+		panic(err)
+	}
+	c := rpc.NewUserClient(conn)
 	return c
 }

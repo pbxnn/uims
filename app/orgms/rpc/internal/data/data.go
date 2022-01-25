@@ -1,9 +1,12 @@
 package data
 
 import (
+	"fmt"
+	"gorm.io/gorm/schema"
 	"uims/app/orgms/rpc/internal/conf"
 	gp "uims/third_party/gorm_plugin"
 
+	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/extra/redisotel"
 	"github.com/go-redis/redis/v8"
@@ -13,25 +16,38 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
+var ProviderSet = wire.NewSet(
+	NewData,
+	NewDB,
+	NewCache,
+	NewKafkaProducer,
+	NewCompanyRepo,
+)
 
 // Data .
 type Data struct {
-	// TODO wrapped database client
+	db    *gorm.DB
+	cache *redis.Client
+	kp    sarama.AsyncProducer
 }
 
 // NewData .
-func NewData(db *gorm.DB, cache *redis.Client, logger log.Logger) (*Data, func(), error) {
+func NewData(db *gorm.DB, cache *redis.Client, kp sarama.AsyncProducer, logger log.Logger) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
+		kp.Close()
 	}
-	return &Data{}, cleanup, nil
+	return &Data{db: db, cache: cache, kp: kp}, cleanup, nil
 }
 
 func NewDB(c *conf.Data, logger log.Logger) *gorm.DB {
 	log := log.NewHelper(logger)
 
-	db, err := gorm.Open(mysql.Open(c.Database.Source), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(c.Database.Source), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
+	})
 	if err != nil {
 		log.Fatal(err)
 		return db
@@ -44,6 +60,7 @@ func NewDB(c *conf.Data, logger log.Logger) *gorm.DB {
 		return db
 	}
 
+	log.Infof("init DB success...")
 	return db
 }
 
@@ -59,4 +76,15 @@ func NewCache(c *conf.Data, logger log.Logger) *redis.Client {
 	cache.AddHook(redisotel.TracingHook{})
 
 	return cache
+}
+
+func NewKafkaProducer(conf *conf.Data) sarama.AsyncProducer {
+	c := sarama.NewConfig()
+	fmt.Println(conf.Kafka.Addrs)
+	p, err := sarama.NewAsyncProducer(conf.Kafka.Addrs, c)
+	if err != nil {
+		panic(err)
+	}
+
+	return p
 }

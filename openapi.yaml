@@ -483,7 +483,7 @@ components:
                 isVirtual:
                     type: integer
                     format: int64
-                isDel:
+                delFlag:
                     type: integer
                     format: int64
                 startTime:

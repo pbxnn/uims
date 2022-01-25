@@ -2,20 +2,28 @@ package service
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/log"
+	"uims/app/orgms/api/internal/biz"
 
 	pb "uims/api/orgms/api"
 )
 
 type CompanyService struct {
 	pb.UnimplementedCompanyServer
+
+	companyDO *biz.CompanyDO
+	log       *log.Helper
 }
 
-func NewCompanyService() *CompanyService {
-	return &CompanyService{}
+func NewCompanyService(companyDO *biz.CompanyDO, logger log.Logger) *CompanyService {
+	return &CompanyService{
+		companyDO: companyDO,
+		log:       log.NewHelper(log.With(logger, "module", "service/company")),
+	}
 }
 
 func (s *CompanyService) CreateCompany(ctx context.Context, req *pb.CreateCompanyReq) (*pb.CreateCompanyReply, error) {
-	return &pb.CreateCompanyReply{}, nil
+	return s.companyDO.CreateCompany(ctx, req)
 }
 func (s *CompanyService) BatchCreateCompany(ctx context.Context, req *pb.CreateCompanyReq) (*pb.BatchCreateCompanyReply, error) {
 	return &pb.BatchCreateCompanyReply{}, nil

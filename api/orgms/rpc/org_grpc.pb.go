@@ -41,7 +41,7 @@ func NewCompanyClient(cc grpc.ClientConnInterface) CompanyClient {
 
 func (c *companyClient) CreateCompany(ctx context.Context, in *CreateCompanyReq, opts ...grpc.CallOption) (*CreateCompanyReply, error) {
 	out := new(CreateCompanyReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Company/CreateCompany", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Company/CreateCompany", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *companyClient) CreateCompany(ctx context.Context, in *CreateCompanyReq,
 
 func (c *companyClient) BatchCreateCompany(ctx context.Context, in *CreateCompanyReq, opts ...grpc.CallOption) (*BatchCreateCompanyReply, error) {
 	out := new(BatchCreateCompanyReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Company/BatchCreateCompany", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Company/BatchCreateCompany", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (c *companyClient) BatchCreateCompany(ctx context.Context, in *CreateCompan
 
 func (c *companyClient) GetCompanyList(ctx context.Context, in *GetCompanyListReq, opts ...grpc.CallOption) (*GetCompanyListReply, error) {
 	out := new(GetCompanyListReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Company/GetCompanyList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Company/GetCompanyList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *companyClient) GetCompanyList(ctx context.Context, in *GetCompanyListRe
 
 func (c *companyClient) GetCompany(ctx context.Context, in *GetCompanyReq, opts ...grpc.CallOption) (*GetCompanyReply, error) {
 	out := new(GetCompanyReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Company/GetCompany", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Company/GetCompany", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (c *companyClient) GetCompany(ctx context.Context, in *GetCompanyReq, opts 
 
 func (c *companyClient) UpdateCompany(ctx context.Context, in *UpdateCompanyReq, opts ...grpc.CallOption) (*UpdateCompanyReply, error) {
 	out := new(UpdateCompanyReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Company/UpdateCompany", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Company/UpdateCompany", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func (c *companyClient) UpdateCompany(ctx context.Context, in *UpdateCompanyReq,
 
 func (c *companyClient) DeleteCompany(ctx context.Context, in *DelCompanyReq, opts ...grpc.CallOption) (*DelCompanyReply, error) {
 	out := new(DelCompanyReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Company/DeleteCompany", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Company/DeleteCompany", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (c *companyClient) DeleteCompany(ctx context.Context, in *DelCompanyReq, op
 
 func (c *companyClient) OrderCompany(ctx context.Context, in *OrderCompanyReq, opts ...grpc.CallOption) (*OrderCompanyReply, error) {
 	out := new(OrderCompanyReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Company/OrderCompany", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Company/OrderCompany", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +164,7 @@ func _Company_CreateCompany_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Company/CreateCompany",
+		FullMethod: "/uims.orgms.rpc.Company/CreateCompany",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CompanyServer).CreateCompany(ctx, req.(*CreateCompanyReq))
@@ -182,7 +182,7 @@ func _Company_BatchCreateCompany_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Company/BatchCreateCompany",
+		FullMethod: "/uims.orgms.rpc.Company/BatchCreateCompany",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CompanyServer).BatchCreateCompany(ctx, req.(*CreateCompanyReq))
@@ -200,7 +200,7 @@ func _Company_GetCompanyList_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Company/GetCompanyList",
+		FullMethod: "/uims.orgms.rpc.Company/GetCompanyList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CompanyServer).GetCompanyList(ctx, req.(*GetCompanyListReq))
@@ -218,7 +218,7 @@ func _Company_GetCompany_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Company/GetCompany",
+		FullMethod: "/uims.orgms.rpc.Company/GetCompany",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CompanyServer).GetCompany(ctx, req.(*GetCompanyReq))
@@ -236,7 +236,7 @@ func _Company_UpdateCompany_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Company/UpdateCompany",
+		FullMethod: "/uims.orgms.rpc.Company/UpdateCompany",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CompanyServer).UpdateCompany(ctx, req.(*UpdateCompanyReq))
@@ -254,7 +254,7 @@ func _Company_DeleteCompany_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Company/DeleteCompany",
+		FullMethod: "/uims.orgms.rpc.Company/DeleteCompany",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CompanyServer).DeleteCompany(ctx, req.(*DelCompanyReq))
@@ -272,7 +272,7 @@ func _Company_OrderCompany_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Company/OrderCompany",
+		FullMethod: "/uims.orgms.rpc.Company/OrderCompany",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CompanyServer).OrderCompany(ctx, req.(*OrderCompanyReq))
@@ -284,7 +284,7 @@ func _Company_OrderCompany_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Company_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "uims.orgms.api.Company",
+	ServiceName: "uims.orgms.rpc.Company",
 	HandlerType: (*CompanyServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -346,7 +346,7 @@ func NewDepartmentClient(cc grpc.ClientConnInterface) DepartmentClient {
 
 func (c *departmentClient) GetDepartment(ctx context.Context, in *GetDepartmentReq, opts ...grpc.CallOption) (*GetDepartmentReply, error) {
 	out := new(GetDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/GetDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/GetDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -355,7 +355,7 @@ func (c *departmentClient) GetDepartment(ctx context.Context, in *GetDepartmentR
 
 func (c *departmentClient) GetDepartmentList(ctx context.Context, in *GetDepartmentListReq, opts ...grpc.CallOption) (*GetCompanyListReply, error) {
 	out := new(GetCompanyListReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/GetDepartmentList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/GetDepartmentList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -364,7 +364,7 @@ func (c *departmentClient) GetDepartmentList(ctx context.Context, in *GetDepartm
 
 func (c *departmentClient) CreateDepartment(ctx context.Context, in *CreateDepartmentReq, opts ...grpc.CallOption) (*CreateDepartmentReply, error) {
 	out := new(CreateDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/CreateDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/CreateDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -373,7 +373,7 @@ func (c *departmentClient) CreateDepartment(ctx context.Context, in *CreateDepar
 
 func (c *departmentClient) BatchCreateDepartment(ctx context.Context, in *BatchCreateDepartmentReq, opts ...grpc.CallOption) (*BatchCreateDepartmentReply, error) {
 	out := new(BatchCreateDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/BatchCreateDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/BatchCreateDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -382,7 +382,7 @@ func (c *departmentClient) BatchCreateDepartment(ctx context.Context, in *BatchC
 
 func (c *departmentClient) UpdateDepartment(ctx context.Context, in *UpdateDepartmentReq, opts ...grpc.CallOption) (*UpdateDepartmentReply, error) {
 	out := new(UpdateDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/UpdateDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/UpdateDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -391,7 +391,7 @@ func (c *departmentClient) UpdateDepartment(ctx context.Context, in *UpdateDepar
 
 func (c *departmentClient) DeleteDepartment(ctx context.Context, in *DelDepartmentReq, opts ...grpc.CallOption) (*DelDepartmentReply, error) {
 	out := new(DelDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/DeleteDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/DeleteDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -400,7 +400,7 @@ func (c *departmentClient) DeleteDepartment(ctx context.Context, in *DelDepartme
 
 func (c *departmentClient) AssignDepartmentUser(ctx context.Context, in *AssignDepartmentUserReq, opts ...grpc.CallOption) (*AssignDepartmentUserReply, error) {
 	out := new(AssignDepartmentUserReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/AssignDepartmentUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/AssignDepartmentUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -409,7 +409,7 @@ func (c *departmentClient) AssignDepartmentUser(ctx context.Context, in *AssignD
 
 func (c *departmentClient) OrderDepartment(ctx context.Context, in *OrderDepartmentReq, opts ...grpc.CallOption) (*OrderDepartmentReply, error) {
 	out := new(OrderDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/OrderDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/OrderDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -418,7 +418,7 @@ func (c *departmentClient) OrderDepartment(ctx context.Context, in *OrderDepartm
 
 func (c *departmentClient) MoveDepartment(ctx context.Context, in *MoveDepartmentReq, opts ...grpc.CallOption) (*MoveDepartmentReply, error) {
 	out := new(MoveDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/MoveDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/MoveDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -427,7 +427,7 @@ func (c *departmentClient) MoveDepartment(ctx context.Context, in *MoveDepartmen
 
 func (c *departmentClient) MergeDepartment(ctx context.Context, in *MergeDepartmentReq, opts ...grpc.CallOption) (*MergeDepartmentReply, error) {
 	out := new(MergeDepartmentReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.Department/MergeDepartment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.Department/MergeDepartment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -508,7 +508,7 @@ func _Department_GetDepartment_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/GetDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/GetDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).GetDepartment(ctx, req.(*GetDepartmentReq))
@@ -526,7 +526,7 @@ func _Department_GetDepartmentList_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/GetDepartmentList",
+		FullMethod: "/uims.orgms.rpc.Department/GetDepartmentList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).GetDepartmentList(ctx, req.(*GetDepartmentListReq))
@@ -544,7 +544,7 @@ func _Department_CreateDepartment_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/CreateDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/CreateDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).CreateDepartment(ctx, req.(*CreateDepartmentReq))
@@ -562,7 +562,7 @@ func _Department_BatchCreateDepartment_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/BatchCreateDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/BatchCreateDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).BatchCreateDepartment(ctx, req.(*BatchCreateDepartmentReq))
@@ -580,7 +580,7 @@ func _Department_UpdateDepartment_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/UpdateDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/UpdateDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).UpdateDepartment(ctx, req.(*UpdateDepartmentReq))
@@ -598,7 +598,7 @@ func _Department_DeleteDepartment_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/DeleteDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/DeleteDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).DeleteDepartment(ctx, req.(*DelDepartmentReq))
@@ -616,7 +616,7 @@ func _Department_AssignDepartmentUser_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/AssignDepartmentUser",
+		FullMethod: "/uims.orgms.rpc.Department/AssignDepartmentUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).AssignDepartmentUser(ctx, req.(*AssignDepartmentUserReq))
@@ -634,7 +634,7 @@ func _Department_OrderDepartment_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/OrderDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/OrderDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).OrderDepartment(ctx, req.(*OrderDepartmentReq))
@@ -652,7 +652,7 @@ func _Department_MoveDepartment_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/MoveDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/MoveDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).MoveDepartment(ctx, req.(*MoveDepartmentReq))
@@ -670,7 +670,7 @@ func _Department_MergeDepartment_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.Department/MergeDepartment",
+		FullMethod: "/uims.orgms.rpc.Department/MergeDepartment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DepartmentServer).MergeDepartment(ctx, req.(*MergeDepartmentReq))
@@ -682,7 +682,7 @@ func _Department_MergeDepartment_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Department_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "uims.orgms.api.Department",
+	ServiceName: "uims.orgms.rpc.Department",
 	HandlerType: (*DepartmentServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -750,7 +750,7 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 
 func (c *userClient) CreateUser(ctx context.Context, in *CreateUserReq, opts ...grpc.CallOption) (*CreateUserReply, error) {
 	out := new(CreateUserReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.User/CreateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.User/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -759,7 +759,7 @@ func (c *userClient) CreateUser(ctx context.Context, in *CreateUserReq, opts ...
 
 func (c *userClient) BatchCreateUser(ctx context.Context, in *BatchCreateUserReq, opts ...grpc.CallOption) (*BatchCreateUserReply, error) {
 	out := new(BatchCreateUserReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.User/BatchCreateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.User/BatchCreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -768,7 +768,7 @@ func (c *userClient) BatchCreateUser(ctx context.Context, in *BatchCreateUserReq
 
 func (c *userClient) DelUser(ctx context.Context, in *DelUserReq, opts ...grpc.CallOption) (*DelUserReply, error) {
 	out := new(DelUserReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.User/DelUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.User/DelUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -777,7 +777,7 @@ func (c *userClient) DelUser(ctx context.Context, in *DelUserReq, opts ...grpc.C
 
 func (c *userClient) GetUserInfoReq(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*GetUserReply, error) {
 	out := new(GetUserReply)
-	err := c.cc.Invoke(ctx, "/uims.orgms.api.User/GetUserInfoReq", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.orgms.rpc.User/GetUserInfoReq", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -834,7 +834,7 @@ func _User_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.User/CreateUser",
+		FullMethod: "/uims.orgms.rpc.User/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).CreateUser(ctx, req.(*CreateUserReq))
@@ -852,7 +852,7 @@ func _User_BatchCreateUser_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.User/BatchCreateUser",
+		FullMethod: "/uims.orgms.rpc.User/BatchCreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).BatchCreateUser(ctx, req.(*BatchCreateUserReq))
@@ -870,7 +870,7 @@ func _User_DelUser_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.User/DelUser",
+		FullMethod: "/uims.orgms.rpc.User/DelUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).DelUser(ctx, req.(*DelUserReq))
@@ -888,7 +888,7 @@ func _User_GetUserInfoReq_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.orgms.api.User/GetUserInfoReq",
+		FullMethod: "/uims.orgms.rpc.User/GetUserInfoReq",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).GetUserInfoReq(ctx, req.(*GetUserReq))
@@ -900,7 +900,7 @@ func _User_GetUserInfoReq_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var User_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "uims.orgms.api.User",
+	ServiceName: "uims.orgms.rpc.User",
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

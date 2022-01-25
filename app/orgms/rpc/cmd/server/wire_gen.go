@@ -6,29 +6,36 @@
 package main
 
 import (
-	"sys/internal/biz"
-	"sys/internal/conf"
-	"sys/internal/data"
-	"sys/internal/server"
-	"sys/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"uims/app/orgms/rpc/internal/biz"
+	"uims/app/orgms/rpc/internal/conf"
+	"uims/app/orgms/rpc/internal/data"
+	"uims/app/orgms/rpc/internal/data/dao"
+	"uims/app/orgms/rpc/internal/server"
+	"uims/app/orgms/rpc/internal/service"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+	db := data.NewDB(confData, logger)
+	client := data.NewCache(confData, logger)
+	syncProducer := data.NewKafkaProducer(confData)
+	dataData, cleanup, err := data.NewData(db, client, syncProducer, logger)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	app := newApp(logger, httpServer, grpcServer)
+	orgmsCompanyModel := dao.NewOrgmsCompanyModel(db, logger)
+	companyRepo := data.NewCompanyRepo(dataData, orgmsCompanyModel, logger)
+	companyDO := biz.NewCompanyDO(companyRepo, logger)
+	companyService := service.NewCompanyService(companyDO, logger)
+	departmentService := service.NewDepartmentService()
+	userService := service.NewUserService()
+	grpcServer := server.NewGRPCServer(confServer, companyService, departmentService, userService, logger)
+	registrar := server.NewRegistrar(registry)
+	app := newApp(logger, grpcServer, registrar)
 	return app, func() {
 		cleanup()
 	}, nil

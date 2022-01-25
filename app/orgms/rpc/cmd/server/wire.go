@@ -1,9 +1,14 @@
+// +build wireinject
+
+// The build tag makes sure the stub is not built in the final build.
+
 package main
 
 import (
 	"uims/app/orgms/rpc/internal/biz"
 	"uims/app/orgms/rpc/internal/conf"
 	"uims/app/orgms/rpc/internal/data"
+	"uims/app/orgms/rpc/internal/data/dao"
 	"uims/app/orgms/rpc/internal/server"
 	"uims/app/orgms/rpc/internal/service"
 
@@ -19,6 +24,7 @@ func initApp(*conf.Server, *conf.Registry, *conf.Data, log.Logger) (*kratos.App,
 		data.ProviderSet,
 		biz.ProviderSet,
 		service.ProviderSet,
+		dao.ProviderSet,
 		newApp,
 	))
 }

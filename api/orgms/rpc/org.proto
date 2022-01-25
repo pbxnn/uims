@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package uims.orgms.api;
+package uims.orgms.rpc;
 
 import "validate/validate.proto";
 import "api/ums/rpc/ums.proto";
@@ -106,7 +106,7 @@ message CompanyInfo {
   string           company_desc = 5;
   int64            seq          = 6;
   int64            is_virtual   = 7;
-  int64            is_del       = 8;
+  int64            del_flag     = 8;
   int64            start_time   = 9;
   int64            end_time     = 10;
   int64            created_at   = 11;
