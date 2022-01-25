@@ -1,12 +1,11 @@
 syntax = "proto3";
 
-package uims.ums.service;
+package uims.ums.rpc;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "uims/api/user/service";
-
+option go_package = "uims/api/ums/rpc";
 
 service User {
     rpc GetUser(GetUserReq) returns (GetUserReply) {
@@ -91,10 +90,14 @@ message SaveUserReply {
 
 message UserInfo {
     int64 uid = 1;
-    string username = 2;
-    int64 del_flag = 3;
-    int64 status = 4;
-    google.protobuf.Timestamp created_at = 5;
-    google.protobuf.Timestamp updated_at = 6;
+    string real_name = 2;
+    string user_name = 3;
+    int64 phone = 4;
+    string avatar = 5;
+    int64 del_flag = 6;
+    int64 status = 7;
+    int64 origin_app_id = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
 }
 

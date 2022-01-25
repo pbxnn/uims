@@ -2,7 +2,7 @@
 // versions:
 // protoc-gen-go-http v2.1.4
 
-package service
+package rpc
 
 import (
 	context "context"
@@ -43,7 +43,7 @@ func _User_GetUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) erro
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/uims.ums.service.User/GetUser")
+		http.SetOperation(ctx, "/uims.ums.rpc.User/GetUser")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetUser(ctx, req.(*GetUserReq))
 		})
@@ -65,7 +65,7 @@ func _User_GetUserByUsername0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Con
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/uims.ums.service.User/GetUserByUsername")
+		http.SetOperation(ctx, "/uims.ums.rpc.User/GetUserByUsername")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetUserByUsername(ctx, req.(*GetUserByUsernameReq))
 		})
@@ -84,7 +84,7 @@ func _User_Save0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/uims.ums.service.User/Save")
+		http.SetOperation(ctx, "/uims.ums.rpc.User/Save")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.Save(ctx, req.(*SaveUserReq))
 		})
@@ -103,7 +103,7 @@ func _User_CreateUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) e
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/uims.ums.service.User/CreateUser")
+		http.SetOperation(ctx, "/uims.ums.rpc.User/CreateUser")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CreateUser(ctx, req.(*CreateUserReq))
 		})
@@ -122,7 +122,7 @@ func _User_ListUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) err
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/uims.ums.service.User/ListUser")
+		http.SetOperation(ctx, "/uims.ums.rpc.User/ListUser")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ListUser(ctx, req.(*ListUserReq))
 		})
@@ -155,7 +155,7 @@ func (c *UserHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUserReq, 
 	var out CreateUserReply
 	pattern := "/ums/user/create"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/uims.ums.service.User/CreateUser"))
+	opts = append(opts, http.Operation("/uims.ums.rpc.User/CreateUser"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -168,7 +168,7 @@ func (c *UserHTTPClientImpl) GetUser(ctx context.Context, in *GetUserReq, opts .
 	var out GetUserReply
 	pattern := "/ums/user/{uid}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/uims.ums.service.User/GetUser"))
+	opts = append(opts, http.Operation("/uims.ums.rpc.User/GetUser"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -181,7 +181,7 @@ func (c *UserHTTPClientImpl) GetUserByUsername(ctx context.Context, in *GetUserB
 	var out GetUserByUsernameReply
 	pattern := "/ums/user/{username}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/uims.ums.service.User/GetUserByUsername"))
+	opts = append(opts, http.Operation("/uims.ums.rpc.User/GetUserByUsername"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -194,7 +194,7 @@ func (c *UserHTTPClientImpl) ListUser(ctx context.Context, in *ListUserReq, opts
 	var out ListUserReply
 	pattern := "/ums/user/list"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/uims.ums.service.User/ListUser"))
+	opts = append(opts, http.Operation("/uims.ums.rpc.User/ListUser"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -207,7 +207,7 @@ func (c *UserHTTPClientImpl) Save(ctx context.Context, in *SaveUserReq, opts ...
 	var out SaveUserReply
 	pattern := "/ums/user/save"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/uims.ums.service.User/Save"))
+	opts = append(opts, http.Operation("/uims.ums.rpc.User/Save"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

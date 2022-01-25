@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.1
-// source: api/ums/service/user.proto
+// source: api/ums/rpc/user.proto
 
-package service
+package rpc
 
 import (
 	context "context"
@@ -39,7 +39,7 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 
 func (c *userClient) GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*GetUserReply, error) {
 	out := new(GetUserReply)
-	err := c.cc.Invoke(ctx, "/uims.ums.service.User/GetUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.ums.rpc.User/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *userClient) GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.C
 
 func (c *userClient) GetUserByUsername(ctx context.Context, in *GetUserByUsernameReq, opts ...grpc.CallOption) (*GetUserByUsernameReply, error) {
 	out := new(GetUserByUsernameReply)
-	err := c.cc.Invoke(ctx, "/uims.ums.service.User/GetUserByUsername", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.ums.rpc.User/GetUserByUsername", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *userClient) GetUserByUsername(ctx context.Context, in *GetUserByUsernam
 
 func (c *userClient) Save(ctx context.Context, in *SaveUserReq, opts ...grpc.CallOption) (*SaveUserReply, error) {
 	out := new(SaveUserReply)
-	err := c.cc.Invoke(ctx, "/uims.ums.service.User/Save", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.ums.rpc.User/Save", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *userClient) Save(ctx context.Context, in *SaveUserReq, opts ...grpc.Cal
 
 func (c *userClient) CreateUser(ctx context.Context, in *CreateUserReq, opts ...grpc.CallOption) (*CreateUserReply, error) {
 	out := new(CreateUserReply)
-	err := c.cc.Invoke(ctx, "/uims.ums.service.User/CreateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.ums.rpc.User/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (c *userClient) CreateUser(ctx context.Context, in *CreateUserReq, opts ...
 
 func (c *userClient) ListUser(ctx context.Context, in *ListUserReq, opts ...grpc.CallOption) (*ListUserReply, error) {
 	out := new(ListUserReply)
-	err := c.cc.Invoke(ctx, "/uims.ums.service.User/ListUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/uims.ums.rpc.User/ListUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func _User_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.ums.service.User/GetUser",
+		FullMethod: "/uims.ums.rpc.User/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).GetUser(ctx, req.(*GetUserReq))
@@ -154,7 +154,7 @@ func _User_GetUserByUsername_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.ums.service.User/GetUserByUsername",
+		FullMethod: "/uims.ums.rpc.User/GetUserByUsername",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).GetUserByUsername(ctx, req.(*GetUserByUsernameReq))
@@ -172,7 +172,7 @@ func _User_Save_Handler(srv interface{}, ctx context.Context, dec func(interface
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.ums.service.User/Save",
+		FullMethod: "/uims.ums.rpc.User/Save",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).Save(ctx, req.(*SaveUserReq))
@@ -190,7 +190,7 @@ func _User_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.ums.service.User/CreateUser",
+		FullMethod: "/uims.ums.rpc.User/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).CreateUser(ctx, req.(*CreateUserReq))
@@ -208,7 +208,7 @@ func _User_ListUser_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/uims.ums.service.User/ListUser",
+		FullMethod: "/uims.ums.rpc.User/ListUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).ListUser(ctx, req.(*ListUserReq))
@@ -220,7 +220,7 @@ func _User_ListUser_Handler(srv interface{}, ctx context.Context, dec func(inter
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var User_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "uims.ums.service.User",
+	ServiceName: "uims.ums.rpc.User",
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -245,5 +245,5 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/ums/service/user.proto",
+	Metadata: "api/ums/rpc/user.proto",
 }

@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"uims/app/ums/service/internal/biz"
-	"uims/app/ums/service/internal/data/dao"
+	"uims/app/ums/rpc/internal/biz"
+	"uims/app/ums/rpc/internal/data/dao"
 
 	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/log"

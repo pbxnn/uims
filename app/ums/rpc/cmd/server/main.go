@@ -7,7 +7,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"os"
 
-	"uims/app/ums/service/internal/conf"
+	"uims/app/ums/rpc/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -24,7 +24,7 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name = "uims.ums.service"
+	Name = "uims.ums.rpc"
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.

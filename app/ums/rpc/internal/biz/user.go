@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	umsService "uims/api/ums/service"
-	"uims/app/ums/service/internal/data/dao"
+	"uims/app/ums/rpc/internal/data/dao"
 
 	"github.com/go-kratos/kratos/v2/log"
 )

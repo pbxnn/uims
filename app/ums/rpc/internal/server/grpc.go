@@ -8,8 +8,8 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	umsService "uims/api/ums/service"
-	"uims/app/ums/service/internal/conf"
-	"uims/app/ums/service/internal/service"
+	"uims/app/ums/rpc/internal/conf"
+	"uims/app/ums/rpc/internal/service"
 )
 
 // NewGRPCServer new a gRPC server.

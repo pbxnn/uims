@@ -8,12 +8,12 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"uims/app/ums/service/internal/biz"
-	"uims/app/ums/service/internal/conf"
-	"uims/app/ums/service/internal/data"
-	"uims/app/ums/service/internal/data/dao"
-	"uims/app/ums/service/internal/server"
-	"uims/app/ums/service/internal/service"
+	"uims/app/ums/rpc/internal/biz"
+	"uims/app/ums/rpc/internal/conf"
+	"uims/app/ums/rpc/internal/data"
+	"uims/app/ums/rpc/internal/data/dao"
+	"uims/app/ums/rpc/internal/server"
+	"uims/app/ums/rpc/internal/service"
 )
 
 // Injectors from wire.go:

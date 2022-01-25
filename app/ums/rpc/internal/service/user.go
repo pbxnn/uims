@@ -4,7 +4,7 @@ import (
 	"context"
 
 	umsService "uims/api/ums/service"
-	"uims/app/ums/service/internal/biz"
+	"uims/app/ums/rpc/internal/biz"
 
 	"github.com/go-kratos/kratos/v2/log"
 )

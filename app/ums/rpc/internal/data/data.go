@@ -2,7 +2,7 @@ package data
 
 import (
 	"github.com/Shopify/sarama"
-	"uims/app/ums/service/internal/conf"
+	"uims/app/ums/rpc/internal/conf"
 	gp "uims/third_party/gorm_plugin"
 
 	"github.com/go-kratos/kratos/v2/log"
