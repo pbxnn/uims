@@ -17,26 +17,16 @@ func CreateTopic(cmd *cobra.Command, args []string) {
 	topicName = args[0]
 
 	log.Println("start craete topic...")
-	broker := sarama.NewBroker(kafkaAddress)
-	err := broker.Open(nil)
-	if err != nil {
-		log.Panicln("open broker err:", err)
-	}
-
-	config := sarama.NewConfig()
 	topicDetail := sarama.TopicDetail{NumPartitions: 1, ReplicationFactor: 1}
-	admin, err := sarama.NewClusterAdmin([]string{kafkaAddress}, config)
-	if err != nil {
-		log.Panicln("create new cluster err:", err)
-	}
+	kafkaAdmin := initKafkaAdmin()
 
 	defer func() {
-		if err := admin.Close(); err != nil {
+		if err := kafkaAdmin.Close(); err != nil {
 			log.Panicln("close admin err:", err)
 		}
 	}()
 
-	err = admin.CreateTopic(topicName, &topicDetail, false)
+	err := kafkaAdmin.CreateTopic(topicName, &topicDetail, false)
 	if err != nil {
 		log.Panicln("create topic err:", err)
 	}
