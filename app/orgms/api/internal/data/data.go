@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"github.com/Shopify/sarama"
 
 	"uims/api/orgms/rpc"
 	"uims/app/orgms/api/internal/conf"
@@ -23,6 +24,7 @@ var ProviderSet = wire.NewSet(
 	NewCompanyClient,
 	NewDepartmentClient,
 	NewUserClient,
+	NewKafkaSyncProducer,
 )
 
 // Data .
@@ -31,6 +33,7 @@ type Data struct {
 	companyClient    rpc.CompanyClient
 	departmentClient rpc.DepartmentClient
 	userClient       rpc.UserClient
+	syncProducer     sarama.SyncProducer
 }
 
 // NewData
@@ -38,11 +41,13 @@ func NewData(
 	companyClient rpc.CompanyClient,
 	departmentClient rpc.DepartmentClient,
 	userClient rpc.UserClient,
+	syncProducer sarama.SyncProducer,
 ) (*Data, func(), error) {
 	d := &Data{
 		companyClient:    companyClient,
 		departmentClient: departmentClient,
 		userClient:       userClient,
+		syncProducer:     syncProducer,
 	}
 	return d, nil, nil
 }
@@ -108,4 +113,17 @@ func NewUserClient(r registry.Discovery) rpc.UserClient {
 	}
 	c := rpc.NewUserClient(conn)
 	return c
+}
+
+func NewKafkaSyncProducer(conf *conf.Data) sarama.SyncProducer {
+	c := sarama.NewConfig()
+	c.Producer.Return.Successes = true
+	c.Producer.Return.Errors = true
+
+	p, err := sarama.NewSyncProducer(conf.Kafka.Addrs, c)
+	if err != nil {
+		panic(err)
+	}
+
+	return p
 }

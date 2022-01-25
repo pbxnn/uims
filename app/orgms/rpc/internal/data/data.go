@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"gorm.io/gorm/schema"
 	"uims/app/orgms/rpc/internal/conf"
 	gp "uims/third_party/gorm_plugin"
@@ -20,7 +19,8 @@ var ProviderSet = wire.NewSet(
 	NewData,
 	NewDB,
 	NewCache,
-	NewKafkaProducer,
+	NewKafkaAsyncProducer,
+	NewKafkaSyncProducer,
 	NewCompanyRepo,
 )
 
@@ -28,16 +28,18 @@ var ProviderSet = wire.NewSet(
 type Data struct {
 	db    *gorm.DB
 	cache *redis.Client
-	kp    sarama.AsyncProducer
+	kap   sarama.AsyncProducer
+	ksp   sarama.SyncProducer
 }
 
 // NewData .
-func NewData(db *gorm.DB, cache *redis.Client, kp sarama.AsyncProducer, logger log.Logger) (*Data, func(), error) {
+func NewData(db *gorm.DB, cache *redis.Client, kap sarama.AsyncProducer, ksp sarama.SyncProducer, logger log.Logger) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
-		kp.Close()
+		kap.Close()
+		ksp.Close()
 	}
-	return &Data{db: db, cache: cache, kp: kp}, cleanup, nil
+	return &Data{db: db, cache: cache, kap: kap, ksp: ksp}, cleanup, nil
 }
 
 func NewDB(c *conf.Data, logger log.Logger) *gorm.DB {
@@ -78,10 +80,24 @@ func NewCache(c *conf.Data, logger log.Logger) *redis.Client {
 	return cache
 }
 
-func NewKafkaProducer(conf *conf.Data) sarama.AsyncProducer {
+func NewKafkaAsyncProducer(conf *conf.Data) sarama.AsyncProducer {
 	c := sarama.NewConfig()
-	fmt.Println(conf.Kafka.Addrs)
+	c.Producer.Return.Successes = false
+	c.Producer.Return.Errors = true
 	p, err := sarama.NewAsyncProducer(conf.Kafka.Addrs, c)
+	if err != nil {
+		panic(err)
+	}
+
+	return p
+}
+
+func NewKafkaSyncProducer(conf *conf.Data) sarama.SyncProducer {
+	c := sarama.NewConfig()
+	c.Producer.Return.Successes = true
+	c.Producer.Return.Errors = true
+
+	p, err := sarama.NewSyncProducer(conf.Kafka.Addrs, c)
 	if err != nil {
 		panic(err)
 	}

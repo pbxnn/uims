@@ -21,6 +21,7 @@ func NewCompanyDO(c rpc.CompanyClient, logger log.Logger) *CompanyDO {
 }
 
 func (do *CompanyDO) CreateCompany(ctx context.Context, apiReq *api.CreateCompanyReq) (*api.CreateCompanyReply, error) {
+
 	rpcReq := &rpc.CreateCompanyReq{}
 	rpcReply := &rpc.CreateCompanyReply{}
 	apiReply := &api.CreateCompanyReply{}
