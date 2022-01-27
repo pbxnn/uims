@@ -124,15 +124,15 @@ func (client *KafkaPubClient) Pub(ctx context.Context, topic string, msg []byte)
 
 	if _, ok := transport.FromServerContext(ctx); ok {
 		tracer := otel.Tracer("uims")
-		_, span := tracer.Start(ctx, kafkaMsg.Topic, trace.WithSpanKind(trace.SpanKindProducer), trace.WithTimestamp(time.Now()))
+		_, span := tracer.Start(ctx, "kafka_pub/"+kafkaMsg.Topic, trace.WithSpanKind(trace.SpanKindProducer), trace.WithTimestamp(time.Now()))
 		defer span.End()
 
-		msgKey, _ := kafkaMsg.Key.Encode()
-		msgValue, _ := kafkaMsg.Value.Encode()
+		//msgKey, _ := kafkaMsg.Key.Encode()
+		//msgValue, _ := kafkaMsg.Value.Encode()
 		attrs := []attribute.KeyValue{
 			attribute.String("topic", kafkaMsg.Topic),
-			attribute.String("key", string(msgKey)),
-			attribute.String("value", string(msgValue)),
+			//attribute.String("key", string(msgKey)),
+			attribute.String("msg", string(msg)),
 			attribute.Int64("offset", offset),
 			attribute.Int64("partition", int64(partition)),
 		}

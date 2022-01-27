@@ -33,7 +33,8 @@ func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Da
 	userService := service.NewUserService(userUseCase, logger)
 	grpcServer := server.NewGRPCServer(confServer, logger, userService)
 	registrar := server.NewRegistrar(registry)
-	app := newApp(logger, grpcServer, registrar)
+	kafkaSubClient := server.NewKafkaConsumer(kafkaConsumer)
+	app := newApp(logger, grpcServer, registrar, kafkaSubClient)
 	return app, func() {
 		cleanup()
 	}, nil

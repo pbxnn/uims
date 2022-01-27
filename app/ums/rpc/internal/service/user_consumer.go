@@ -31,12 +31,11 @@ import (
 
 func UserActionHandler(ctx context.Context) error {
 	body := kafka.GetKafkaMsg(ctx)
+	fmt.Println(string(body))
 	msg := &rpc.UserActionMsg{}
 	if err := json.Unmarshal(body, msg); err != nil {
 		return err
 	}
-
-	fmt.Println(string(body))
 
 	return nil
 }

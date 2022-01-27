@@ -6,6 +6,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"os"
+	"uims/pkg/kafka"
 
 	"uims/app/ums/rpc/internal/conf"
 
@@ -37,7 +38,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, rr registry.Registrar) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, rr registry.Registrar, kc *kafka.KafkaSubClient) *kratos.App {
 	return kratos.New(
 		kratos.ID(Name+id),
 		kratos.Name(Name),

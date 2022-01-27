@@ -90,7 +90,7 @@ func main() {
 		log.NewHelper(logger).Error(err)
 	}
 
-	app, cleanup, err := initApp(bc.Server, &rc, bc.Data, logger)
+	app, cleanup, err := initApp(bc.Server, &rc, bc.Data, bc.KafkaProducer, logger)
 	//app, cleanup, err := initApp(bc.Server, &rc, bc.Data, logger)
 	if err != nil {
 		panic(err)

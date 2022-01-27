@@ -158,7 +158,9 @@ func (c *KafkaConsumerGroup) ConsumeClaim(session sarama.ConsumerGroupSession, c
 }
 
 func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) error {
-	handlerName := reflect.TypeOf(c.handler).Name()
+	r := reflect.TypeOf(c.handler)
+	handlerName := r.Name()
+	//handlerName := reflect.TypeOf(c.handler).Name()
 	customCtx := CustomCtx{
 		Handle: handlerName,
 		Type:   "kafka",
@@ -178,13 +180,14 @@ func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) erro
 		body.Msg = message.Value
 	}
 
+	ctx = trace.ContextWithSpanContext(ctx, body.SpanContext)
 	tracer := otel.Tracer("uims")
-	ctx = trace.ContextWithRemoteSpanContext(ctx, body.SpanContext)
-	_, span := tracer.Start(ctx, message.Topic, trace.WithSpanKind(trace.SpanKindConsumer), trace.WithTimestamp(time.Now()))
+
+	_, span := tracer.Start(ctx, "kafka_sub/"+message.Topic, trace.WithSpanKind(trace.SpanKindConsumer), trace.WithTimestamp(time.Now()))
 	attrs := []attribute.KeyValue{
 		attribute.String("topic", message.Topic),
-		attribute.String("key", string(message.Key)),
-		attribute.String("value", string(message.Value)),
+		//attribute.String("key", string(message.Key)),
+		attribute.String("msg", string(body.Msg)),
 		attribute.Int64("offset", message.Offset),
 		attribute.Int64("partition", int64(message.Partition)),
 	}
@@ -209,12 +212,12 @@ func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) erro
 		span.End()
 	}()
 
-	ctx = context.WithValue(ctx, KafkaBodyKey, body.Msg)
+	ctx = context.WithValue(ctx, KafkaBodyKey, string(body.Msg))
 
 	err := c.handler(ctx)
-	if err != nil {
-		attrs = append(attrs, attribute.String("error", err.Error()))
-	}
+	//if err != nil {
+	//	attrs = append(attrs, attribute.String("error", err.Error()))
+	//}
 
 	// info 日志里打印出partition
 	//.AddNotice(ctx, "partition", message.Partition)
@@ -226,5 +229,8 @@ func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) erro
 }
 
 func GetKafkaMsg(ctx context.Context) []byte {
-	return []byte(fmt.Sprint(ctx.Value(KafkaBodyKey)))
+	body := ctx.Value(KafkaBodyKey).(string)
+	//b, err := GetBytes(body)
+	fmt.Println(body)
+	return []byte(body)
 }

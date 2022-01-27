@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"encoding/json"
+	"uims/pkg/defines"
 
 	"uims/app/ums/rpc/internal/biz"
 	"uims/app/ums/rpc/internal/data/dao"
@@ -42,7 +43,7 @@ func (r *userRepo) CreateUser(ctx context.Context, u *biz.User) (*dao.UmsUser, e
 		return nil, err
 	}
 
-	_, _, err = r.data.kp.Pub(ctx, "uims_ums_user_create", msg)
+	_, _, err = r.data.kp.Pub(ctx, defines.USER_CREATE_TOPIC, msg)
 
 	return nil, err
 

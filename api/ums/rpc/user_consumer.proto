@@ -12,11 +12,11 @@ message UserActionMsg {
   int64                     action_id     = 3;
   string                    action_detail = 4;
   google.protobuf.Timestamp action_time   = 5;
-  ACTION_TYPE                action_type   = 6;
+  ACTION_TYPE               action_type   = 6;
 }
 
 enum ACTION_TYPE {
-  UNKNOWN                   = 0;
+  UNKNOWN_ACTION                   = 0;
 
   ORGMS_CREATE_COMPANY      = 1000000;
   ORGMS_DELETE_COMPANY      = 1000001;
@@ -38,5 +38,4 @@ enum ACTION_TYPE {
   UPMS_CREATE_ROLE          = 3000000;
 
   UMS_CREATE_USER           = 4000000;
-
 }

@@ -31,11 +31,25 @@ func initCmdList(rootCmd *cobra.Command) {
 		Run:   kafka.ListConsumerGroups,
 	}
 
+	var describeConsumerGroup = &cobra.Command{
+		Use:   "getConsumerGroup",
+		Short: "打印consumer group列表",
+		Run:   kafka.DescribeConsumerGroup,
+	}
+
+	var describeTopic = &cobra.Command{
+		Use:   "describeTopic",
+		Short: "打印consumer group列表",
+		Run:   kafka.DescribeTopic,
+	}
+
 	rootCmd.AddCommand(
 		createKafkaTopic,
 		listKafkaTopic,
 		listConsumerGroup,
 		deleteKafkaTopic,
+		describeConsumerGroup,
+		describeTopic,
 	)
 }
 

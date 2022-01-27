@@ -24,7 +24,6 @@ var ProviderSet = wire.NewSet(
 	NewCompanyClient,
 	NewDepartmentClient,
 	NewUserClient,
-	NewKafkaSyncProducer,
 )
 
 // Data .
@@ -113,17 +112,4 @@ func NewUserClient(r registry.Discovery) rpc.UserClient {
 	}
 	c := rpc.NewUserClient(conn)
 	return c
-}
-
-func NewKafkaSyncProducer(conf *conf.Data) sarama.SyncProducer {
-	c := sarama.NewConfig()
-	c.Producer.Return.Successes = true
-	c.Producer.Return.Errors = true
-
-	p, err := sarama.NewSyncProducer(conf.Kafka.Addrs, c)
-	if err != nil {
-		panic(err)
-	}
-
-	return p
 }

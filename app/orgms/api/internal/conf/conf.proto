@@ -6,9 +6,10 @@ option go_package = "uims/app/orgms/internal/conf";
 import "google/protobuf/duration.proto";
 
 message Bootstrap {
-  Server server = 1;
-  Data   data   = 2;
-  Trace  trace  = 3;
+  Server        server         = 1;
+  Data          data           = 2;
+  Trace         trace          = 3;
+  KafkaProducer kafka_producer = 4;
 }
 
 message Server {
@@ -32,20 +33,17 @@ message Data {
     string source = 2;
   }
   message Redis {
-    string network = 1;
-    string addr = 2;
-    string password = 3;
-    int32 db = 4;
-    google.protobuf.Duration dial_timeout = 5;
-    google.protobuf.Duration read_timeout = 6;
+    string                   network       = 1;
+    string                   addr          = 2;
+    string                   password      = 3;
+    int32                    db            = 4;
+    google.protobuf.Duration dial_timeout  = 5;
+    google.protobuf.Duration read_timeout  = 6;
     google.protobuf.Duration write_timeout = 7;
   }
-  message Kafka {
-    repeated string addrs = 1;
-  }
+
   Database database = 1;
   Redis    redis    = 2;
-  Kafka    kafka    = 3;
 }
 
 message Trace {
@@ -58,6 +56,11 @@ message Registry {
     string scheme  = 2;
   }
   Consul consul = 1;
+}
+
+message KafkaProducer {
+  repeated string addrs   = 1;
+  string          version = 2;
 }
 
 message Auth {

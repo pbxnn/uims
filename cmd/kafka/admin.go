@@ -52,6 +52,30 @@ func ListTopic(cmd *cobra.Command, args []string) {
 	}
 }
 
+func DescribeTopic(cmd *cobra.Command, args []string) {
+	if len(args) < 1 {
+		log.Panicln("args not enough")
+	}
+
+	log.Println("start describe topic...")
+
+	kafkaAdmin := initKafkaAdmin()
+	defer func() {
+		if err := kafkaAdmin.Close(); err != nil {
+			log.Panicln("close admin err:", err)
+		}
+	}()
+
+	topics, err := kafkaAdmin.DescribeConsumerGroups(args)
+	if err != nil {
+		log.Panicln("describe topic err:", err)
+	}
+
+	for idx, topic := range topics {
+		fmt.Println(idx, topic)
+	}
+}
+
 func DeleteTopic(cmd *cobra.Command, args []string) {
 	var topicName string
 	if len(args) < 1 {
@@ -88,6 +112,30 @@ func ListConsumerGroups(cmd *cobra.Command, args []string) {
 	topics, err := kafkaAdmin.ListConsumerGroups()
 	if err != nil {
 		log.Panicln("create topic err:", err)
+	}
+
+	for idx, topic := range topics {
+		fmt.Println(idx, topic)
+	}
+}
+
+func DescribeConsumerGroup(cmd *cobra.Command, args []string) {
+	if len(args) < 1 {
+		log.Panicln("args not enough")
+	}
+
+	log.Println("start describe consumer group...")
+
+	kafkaAdmin := initKafkaAdmin()
+	defer func() {
+		if err := kafkaAdmin.Close(); err != nil {
+			log.Panicln("close admin err:", err)
+		}
+	}()
+
+	topics, err := kafkaAdmin.DescribeConsumerGroups(args)
+	if err != nil {
+		log.Panicln("describe consumer group err:", err)
 	}
 
 	for idx, topic := range topics {
