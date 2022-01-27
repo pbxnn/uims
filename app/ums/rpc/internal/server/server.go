@@ -10,7 +10,7 @@ import (
 )
 
 // ProviderSet is server providers.
-var ProviderSet = wire.NewSet(NewGRPCServer, NewRegistrar, NewKafkaConsumer)
+var ProviderSet = wire.NewSet(NewGRPCServer, NewRegistrar, NewKafkaConsumer, NewKafkaProducer)
 
 func NewRegistrar(conf *conf.Registry) registry.Registrar {
 	c := consulAPI.DefaultConfig()

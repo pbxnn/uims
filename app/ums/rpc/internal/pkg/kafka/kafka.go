@@ -38,7 +38,7 @@ func Send(ctx context.Context, kp sarama.SyncProducer, msg *sarama.ProducerMessa
 
 	partition, offset, err := kp.SendMessage(msg)
 	if _, ok := transport.FromServerContext(ctx); ok {
-		tracer := otel.Tracer("kratos")
+		tracer := otel.Tracer("uims")
 		_, span := tracer.Start(ctx, msg.Topic, trace.WithSpanKind(trace.SpanKindProducer), trace.WithTimestamp(time.Now()))
 		defer span.End()
 
@@ -80,7 +80,7 @@ func Consume(c sarama.Consumer, partition int32, topic string, handler ConsumerH
 			if err != nil {
 				fmt.Println(err)
 			}
-			tracer := otel.Tracer("kratos")
+			tracer := otel.Tracer("uims")
 
 			ctx := trace.ContextWithRemoteSpanContext(context.Background(), msg.SpanContext)
 			_, span := tracer.Start(ctx, input.Topic, trace.WithSpanKind(trace.SpanKindConsumer), trace.WithTimestamp(time.Now()))

@@ -24,7 +24,7 @@ func NewUserService(uc *biz.UserUseCase, logger log.Logger) *UserService {
 
 func (s *UserService) GetUser(ctx context.Context, req *umsService.GetUserReq) (*umsService.GetUserReply, error) {
 	return &umsService.GetUserReply{
-		UserInfo: &umsService.UserInfo{Uid: req.Uid, Username: "zxn"},
+		UserInfo: &umsService.UserInfo{Uid: req.Uid, UserName: "zxn"},
 	}, nil
 }
 

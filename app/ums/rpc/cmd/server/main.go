@@ -37,19 +37,6 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-//func newApp(logger log.Logger, hs *http.Server, rr registry.Registrar) *kratos.App {
-//	return kratos.New(
-//		kratos.Name(Name),
-//		kratos.Version(Version),
-//		kratos.Metadata(map[string]string{}),
-//		kratos.Logger(logger),
-//		kratos.Server(
-//			hs,
-//		),
-//		kratos.Registrar(rr),
-//	)
-//}
-
 func newApp(logger log.Logger, gs *grpc.Server, rr registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(Name+id),
@@ -104,8 +91,7 @@ func main() {
 		log.NewHelper(logger).Error(err)
 	}
 
-	app, cleanup, err := initApp(bc.Server, &rc, bc.Data, logger)
-	//app, cleanup, err := initApp(bc.Server, &rc, bc.Data, logger)
+	app, cleanup, err := initApp(bc.Server, &rc, bc.Data, bc.KafkaProducer, bc.KafkaConsumer, logger)
 	if err != nil {
 		panic(err)
 	}

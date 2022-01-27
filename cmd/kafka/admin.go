@@ -16,7 +16,7 @@ func CreateTopic(cmd *cobra.Command, args []string) {
 	}
 	topicName = args[0]
 
-	log.Println("start craete topic...")
+	log.Println("start create topic...")
 	topicDetail := sarama.TopicDetail{NumPartitions: 1, ReplicationFactor: 1}
 	kafkaAdmin := initKafkaAdmin()
 
@@ -33,7 +33,6 @@ func CreateTopic(cmd *cobra.Command, args []string) {
 }
 
 func ListTopic(cmd *cobra.Command, args []string) {
-
 	log.Println("start list topic...")
 
 	kafkaAdmin := initKafkaAdmin()
@@ -44,6 +43,49 @@ func ListTopic(cmd *cobra.Command, args []string) {
 	}()
 
 	topics, err := kafkaAdmin.ListTopics()
+	if err != nil {
+		log.Panicln("create topic err:", err)
+	}
+
+	for idx, topic := range topics {
+		fmt.Println(idx, topic)
+	}
+}
+
+func DeleteTopic(cmd *cobra.Command, args []string) {
+	var topicName string
+	if len(args) < 1 {
+		log.Panicln("args not enough")
+	}
+	topicName = args[0]
+
+	log.Println("start delete topic...")
+	kafkaAdmin := initKafkaAdmin()
+
+	defer func() {
+		if err := kafkaAdmin.Close(); err != nil {
+			log.Panicln("close admin err:", err)
+		}
+	}()
+
+	err := kafkaAdmin.DeleteTopic(topicName)
+	if err != nil {
+		log.Panicln("create topic err:", err)
+	}
+}
+
+func ListConsumerGroups(cmd *cobra.Command, args []string) {
+
+	log.Println("start list topic...")
+
+	kafkaAdmin := initKafkaAdmin()
+	defer func() {
+		if err := kafkaAdmin.Close(); err != nil {
+			log.Panicln("close admin err:", err)
+		}
+	}()
+
+	topics, err := kafkaAdmin.ListConsumerGroups()
 	if err != nil {
 		log.Panicln("create topic err:", err)
 	}

@@ -2,26 +2,41 @@ package service
 
 import (
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
-	umsService "uims/api/ums/rpc"
-	"uims/app/ums/rpc/internal/biz"
+	"encoding/json"
+	"fmt"
+
+	"uims/api/ums/rpc"
+	"uims/pkg/kafka"
 )
 
-type UserConsumerService struct {
-	umsService.UnimplementedUserServer
+//
+//type UserConsumerService struct {
+//	umsService.UnimplementedUserServer
+//
+//	uc  *biz.UserUseCase
+//	log *log.Helper
+//}
+//
+//func NewUserConsumerService(uc *biz.UserUseCase, logger log.Logger) *UserConsumerService {
+//	return &UserConsumerService{
+//		uc:  uc,
+//		log: log.NewHelper(log.With(logger, "module", "UserConsumerService"))}
+//}
+//
+//func (s *UserConsumerService) UserCreatedConsumer(ctx context.Context, msg []byte) error {
+//	s.log.Infof("UserCreatedConsumer, msg:%s", string(msg))
+//
+//	return nil
+//}
 
-	uc  *biz.UserUseCase
-	log *log.Helper
-}
+func UserActionHandler(ctx context.Context) error {
+	body := kafka.GetKafkaMsg(ctx)
+	msg := &rpc.UserActionMsg{}
+	if err := json.Unmarshal(body, msg); err != nil {
+		return err
+	}
 
-func NewUserConsumerService(uc *biz.UserUseCase, logger log.Logger) *UserConsumerService {
-	return &UserConsumerService{
-		uc:  uc,
-		log: log.NewHelper(log.With(logger, "module", "UserConsumerService"))}
-}
-
-func (s *UserConsumerService) UserCreatedConsumer(ctx context.Context, msg []byte) error {
-	s.log.Infof("UserCreatedConsumer, msg:%s", string(msg))
+	fmt.Println(string(body))
 
 	return nil
 }

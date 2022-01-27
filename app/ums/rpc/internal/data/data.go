@@ -1,8 +1,8 @@
 package data
 
 import (
-	"github.com/Shopify/sarama"
 	"uims/app/ums/rpc/internal/conf"
+	"uims/pkg/kafka"
 	gp "uims/third_party/gorm_plugin"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -18,8 +18,6 @@ var ProviderSet = wire.NewSet(
 	NewData,
 	NewDB,
 	NewCache,
-	NewKafkaProducer,
-	NewKafkaConsumer,
 	NewUserRepo,
 )
 
@@ -28,8 +26,7 @@ type Data struct {
 	log   *log.Helper
 	db    *gorm.DB
 	cache *redis.Client
-	kp    sarama.AsyncProducer
-	kc    sarama.Consumer
+	kp    *kafka.KafkaPubClient
 }
 
 func (d Data) GetDB() *gorm.DB {
@@ -37,31 +34,14 @@ func (d Data) GetDB() *gorm.DB {
 }
 
 // NewData .
-func NewData(db *gorm.DB, cache *redis.Client, kp sarama.AsyncProducer, kc sarama.Consumer, logger log.Logger) (*Data, func(), error) {
+func NewData(db *gorm.DB, cache *redis.Client, kp *kafka.KafkaPubClient, logger log.Logger) (*Data, func(), error) {
 	d := &Data{
 		log:   log.NewHelper(log.With(logger, "module", "user-service/data")),
 		db:    db,
 		cache: cache,
 		kp:    kp,
-		kc:    kc,
 	}
-	cleanup := func() {
-		d.kp.Close()
-		d.kc.Close()
-	}
-
-	//go func() {
-	//	pc, err := d.kc.ConsumePartition("uims_ums", 1, sarama.OffsetNewest)
-	//	if err != nil {
-	//		d.log.Warnf("init partition consumer err:%s", err.Error())
-	//		return
-	//	}
-	//	for {
-	//		msg := <-pc.Messages()
-	//		d.log.Infof("Consumed message:[%s], offset:[%d]\n", msg.Value, msg.Offset)
-	//	}
-	//
-	//}()
+	cleanup := func() {}
 
 	return d, cleanup, nil
 }
@@ -96,23 +76,4 @@ func NewCache(c *conf.Data, logger log.Logger) *redis.Client {
 	cache.AddHook(redisotel.TracingHook{})
 
 	return cache
-}
-
-func NewKafkaProducer(conf *conf.Data) sarama.AsyncProducer {
-	c := sarama.NewConfig()
-	p, err := sarama.NewAsyncProducer(conf.Kafka.Addrs, c)
-	if err != nil {
-		panic(err)
-	}
-
-	return p
-}
-
-func NewKafkaConsumer(conf *conf.Data) sarama.Consumer {
-	c := sarama.NewConfig()
-	p, err := sarama.NewConsumer(conf.Kafka.Addrs, c)
-	if err != nil {
-		panic(err)
-	}
-	return p
 }

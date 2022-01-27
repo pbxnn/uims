@@ -7,7 +7,6 @@ import (
 	"uims/app/ums/rpc/internal/biz"
 	"uims/app/ums/rpc/internal/data/dao"
 
-	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
@@ -38,15 +37,14 @@ func (r *userRepo) GetUserByUsername(ctx context.Context, username string) (*dao
 }
 
 func (r *userRepo) CreateUser(ctx context.Context, u *biz.User) (*dao.UmsUser, error) {
-	b, err := json.Marshal(u)
+	msg, err := json.Marshal(u)
 	if err != nil {
 		return nil, err
 	}
-	r.data.kp.Input() <- &sarama.ProducerMessage{
-		Topic: "uims_ums",
-		Value: sarama.ByteEncoder(b),
-	}
-	return nil, nil
+
+	_, _, err = r.data.kp.Pub(ctx, "uims_ums_user_create", msg)
+
+	return nil, err
 
 }
 

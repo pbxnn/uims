@@ -1,16 +1,42 @@
 syntax = "proto3";
 
-package uims.ums.service;
+import "google/protobuf/timestamp.proto";
 
-import "google/protobuf/empty.proto";
+package uims.ums.rpc;
 
-option go_package = "uims/api/user/service";
+option go_package = "uims/api/user/rpc";
 
-message CreateUserMsg {
-  int64 uid = 1;
-  string username = 2;
+message UserActionMsg {
+  int64                     uid           = 1;
+  int64                     app_id        = 2;
+  int64                     action_id     = 3;
+  string                    action_detail = 4;
+  google.protobuf.Timestamp action_time   = 5;
+  ACTION_TYPE                action_type   = 6;
 }
 
-service UserConsumer {
-  rpc CreateUserConsumer(CreateUserMsg) returns(google.protobuf.Empty) {}
+enum ACTION_TYPE {
+  UNKNOWN                   = 0;
+
+  ORGMS_CREATE_COMPANY      = 1000000;
+  ORGMS_DELETE_COMPANY      = 1000001;
+  ORGMS_GET_COMPANY         = 1000002;
+  ORGMS_GET_COMPANY_LIST    = 1000003;
+
+  ORGMS_CREATE_DEPARTMENT   = 1100000;
+  ORGMS_DELETE_DEPARTMENT   = 1100001;
+  ORGMS_GET_DEPARTMENT      = 1100002;
+  ORGMS_GET_DEPARTMENT_LIST = 1100003;
+
+  ORGMS_CREATE_USER         = 1200000;
+  ORGMS_DELETE_USER         = 1200001;
+  ORGMS_GET_USER            = 1200002;
+  ORGMS_GET_USER_LIST       = 1200003;
+
+  APPMS_CREATE_APP          = 2000000;
+
+  UPMS_CREATE_ROLE          = 3000000;
+
+  UMS_CREATE_USER           = 4000000;
+
 }

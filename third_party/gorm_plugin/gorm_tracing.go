@@ -15,7 +15,7 @@ const (
 )
 
 func newTracer() trace.Tracer {
-	tracer := otel.Tracer("kratos")
+	tracer := otel.Tracer("uims")
 	return tracer
 }
 

@@ -3,7 +3,7 @@ syntax = "proto3";
 package uims.ums.service;
 import "errors/errors.proto";
 
-option go_package = "uims/api/user/service";
+option go_package = "uims/api/ums/rpc";
 option java_multiple_files = true;
 
 enum UserServiceErrorReason {

@@ -19,12 +19,11 @@ import (
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, kafkaProducer *conf.KafkaProducer, kafkaConsumer *conf.KafkaConsumer, logger log.Logger) (*kratos.App, func(), error) {
 	db := data.NewDB(confData, logger)
 	client := data.NewCache(confData, logger)
-	asyncProducer := data.NewKafkaProducer(confData)
-	consumer := data.NewKafkaConsumer(confData)
-	dataData, cleanup, err := data.NewData(db, client, asyncProducer, consumer, logger)
+	kafkaPubClient := server.NewKafkaProducer(kafkaProducer)
+	dataData, cleanup, err := data.NewData(db, client, kafkaPubClient, logger)
 	if err != nil {
 		return nil, nil, err
 	}
