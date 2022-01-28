@@ -4,16 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/Shopify/sarama/otelsarama"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/trace"
 	"reflect"
 	"runtime"
 	"time"
 
 	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/log"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/Shopify/sarama/otelsarama"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const KafkaBodyKey string = "KafkaMsg"
@@ -37,6 +36,7 @@ type KafkaSubClient struct {
 	Version  sarama.KafkaVersion
 	Strategy sarama.BalanceStrategy
 	ctx      context.Context
+	logger   log.Logger
 }
 
 type KafkaBody struct {
@@ -51,7 +51,7 @@ type KafkaTrace struct {
 	Remote     bool
 }
 
-func NewKafkaSub(c KafkaConsumeConfig) *KafkaSubClient {
+func NewKafkaSub(c KafkaConsumeConfig, logger log.Logger) *KafkaSubClient {
 	v, err := sarama.ParseKafkaVersion(c.Version)
 	if err != nil {
 		panic("Error parsing Kafka version: " + err.Error())
@@ -74,6 +74,7 @@ func NewKafkaSub(c KafkaConsumeConfig) *KafkaSubClient {
 		Brokers:  c.Brokers,
 		Strategy: s,
 		ctx:      context.Background(),
+		logger:   logger,
 	}
 }
 
@@ -103,6 +104,7 @@ func (c *KafkaSubClient) AddSubFunction(topics []string, groupID string, handler
 		handler: handler,
 		Client:  c,
 		Ready:   make(chan bool),
+		log:     log.NewHelper(log.With(c.logger, "module", "ums.rpc.kafka_consumer")),
 	}
 
 	// Initialize Trace propagators and use the consumer group handler wrapper propagators := propagation.TraceContext{}
@@ -169,22 +171,21 @@ func (c *KafkaConsumerGroup) ConsumeClaim(session sarama.ConsumerGroupSession, c
 }
 
 func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) error {
-	r := reflect.ValueOf(c.handler)
-	fmt.Println(r.String(), r.Type(), r.Kind())
+	handlerName := runtime.FuncForPC(reflect.ValueOf(c.handler).Pointer()).Name()
 
 	carrier := otelsarama.NewConsumerMessageCarrier(message)
 	propagators := propagation.TraceContext{}
 	ctx := propagators.Extract(c.Client.ctx, carrier)
 	propagators.Inject(ctx, otelsarama.NewConsumerMessageCarrier(message))
-
 	spanCtx := trace.SpanContextFromContext(ctx)
+	c.log.WithContext(ctx).Infof("start consuming kafka topic=%s, msg=%s, handler=%s", message.Topic, string(message.Value), handlerName)
 
 	var body KafkaBody
 	if err := json.Unmarshal(message.Value, &body); err == nil {
 		// kafka 消息发送的时候默认包装了一层msg，这里做个兼容。
 		if body.Msg == nil {
 			if err := json.Unmarshal(message.Value, &body.Msg); err != nil {
-				c.log.Warn("got unexpected value")
+				c.log.WithContext(ctx).Warn("got unexpected value")
 			}
 		}
 	} else {
@@ -206,7 +207,7 @@ func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) erro
 				"requestId": spanCtx.TraceID().String(),
 				"spanId":    spanCtx.TraceID().String(),
 				"topic":     message.Topic,
-				//"handle": handlerName,
+				"handle":    handlerName,
 			})
 			fmt.Printf("%s\n-------------------stack-start-------------------\n%+v\n-------------------stack-end-------------------\n", string(info), r)
 		}
@@ -214,18 +215,6 @@ func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) erro
 
 	ctx = context.WithValue(ctx, KafkaBodyKey, string(body.Msg))
 	err := c.handler(ctx)
-
-	attrs := []attribute.KeyValue{
-		attribute.String("topic", message.Topic),
-		attribute.String("key", string(message.Key)),
-		attribute.String("msg", string(body.Msg)),
-		//attribute.Int64("offset", message.Offset),
-		//attribute.Int64("partition", int64(message.Partition)),
-	}
-
-	if err != nil {
-		attrs = append(attrs, attribute.String("error", err.Error()))
-	}
 
 	return err
 }
