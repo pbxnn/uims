@@ -6,14 +6,15 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
-	"time"
-
 	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/transport"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/Shopify/sarama/otelsarama"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
+	"io/ioutil"
+	"time"
 )
 
 type KafkaProducerConfig struct {
@@ -85,10 +86,18 @@ func NewKafkaPub(conf KafkaProducerConfig) *KafkaPubClient {
 		panic("kafka pub version error: %v" + err.Error())
 	}
 
-	producer, err := sarama.NewSyncProducer(conf.Addr, saramaConfig)
+	p, err := sarama.NewSyncProducer(conf.Addr, saramaConfig)
 	if err != nil {
 		panic("kafka pub new producer error: %v" + err.Error())
 	}
+
+	traceProvider := otel.GetTracerProvider()
+	propagators := otel.GetTextMapPropagator()
+	opts := []otelsarama.Option{
+		otelsarama.WithTracerProvider(traceProvider),
+		otelsarama.WithPropagators(propagators),
+	}
+	producer := otelsarama.WrapSyncProducer(saramaConfig, p, opts...)
 
 	c := &KafkaPubClient{
 		Conf:     conf,
@@ -108,31 +117,32 @@ func (client *KafkaPubClient) Pub(ctx context.Context, topic string, msg []byte)
 	if client.producer == nil {
 		return 0, 0, errors.New("kafka producer not init")
 	}
+
 	kafkaBody := KafkaBody{
-		Msg:         msg,
-		SpanContext: trace.SpanContextFromContext(ctx),
+		Msg: msg,
 	}
+
 	body, err := json.Marshal(kafkaBody)
 	if err != nil {
 		return 0, 0, err
 	}
 
-	//start := time.Now()
 	kafkaMsg := &sarama.ProducerMessage{Topic: topic, Value: sarama.ByteEncoder(body)}
+	propagators := propagation.TraceContext{}
+	propagators.Inject(ctx, otelsarama.NewProducerMessageCarrier(kafkaMsg))
+
 	partition, offset, err := client.producer.SendMessage(kafkaMsg)
-	//end := time.Now()
 
 	if _, ok := transport.FromServerContext(ctx); ok {
 		tracer := otel.Tracer("uims")
-		_, span := tracer.Start(ctx, "kafka_pub/"+kafkaMsg.Topic, trace.WithSpanKind(trace.SpanKindProducer), trace.WithTimestamp(time.Now()))
+		_, span := tracer.Start(ctx, "kafka_produce/"+kafkaMsg.Topic, trace.WithSpanKind(trace.SpanKindProducer), trace.WithTimestamp(time.Now()))
 		defer span.End()
 
-		//msgKey, _ := kafkaMsg.Key.Encode()
-		//msgValue, _ := kafkaMsg.Value.Encode()
 		attrs := []attribute.KeyValue{
 			attribute.String("topic", kafkaMsg.Topic),
-			//attribute.String("key", string(msgKey)),
 			attribute.String("msg", string(msg)),
+			attribute.String("traceId", span.SpanContext().TraceID().String()),
+			attribute.String("spanId", span.SpanContext().SpanID().String()),
 			attribute.Int64("offset", offset),
 			attribute.Int64("partition", int64(partition)),
 		}
@@ -142,29 +152,6 @@ func (client *KafkaPubClient) Pub(ctx context.Context, topic string, msg []byte)
 		}
 		span.SetAttributes(attrs...)
 	}
-
-	//infoMsg := "kafka pub success"
-	//if err != nil {
-	//	ralCode = -1
-	//	infoMsg = err.Error()
-	//	zlog.ErrorLogger(ctx, "kafka pub error: "+infoMsg, zlog.String(zlog.TopicType, zlog.LogNameModule))
-	//}
-	//
-	//fields := []zlog.Field{
-	//	zlog.String(zlog.TopicType, zlog.LogNameModule),
-	//	zlog.String("requestId", zlog.GetRequestID(ctx)),
-	//	zlog.String("localIp", env.LocalIP),
-	//	zlog.String("remoteAddr", client.Conf.Addr),
-	//	zlog.String("service", client.Conf.Service),
-	//	zlog.Int32("partition", partition),
-	//	zlog.Int64("offset", offset),
-	//	zlog.Int("ralCode", ralCode),
-	//	zlog.String("requestStartTime", utils.GetFormatRequestTime(start)),
-	//	zlog.String("requestEndTime", utils.GetFormatRequestTime(end)),
-	//	zlog.Float64("cost", utils.GetRequestCost(start, end)),
-	//}
-	//
-	//zlog.InfoLogger(nil, infoMsg, fields...)
 
 	return partition, offset, err
 }

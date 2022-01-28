@@ -4,15 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/Shopify/sarama/otelsarama"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 	"reflect"
 	"runtime"
 	"time"
 
 	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/log"
-	"go.opentelemetry.io/otel/trace"
 )
 
 const KafkaBodyKey string = "KafkaMsg"
@@ -39,8 +40,15 @@ type KafkaSubClient struct {
 }
 
 type KafkaBody struct {
-	Msg         []byte
-	SpanContext trace.SpanContext
+	Msg []byte
+}
+
+type KafkaTrace struct {
+	TraceID    string
+	SpanID     string
+	TraceFlags string
+	TraceState string
+	Remote     bool
 }
 
 func NewKafkaSub(c KafkaConsumeConfig) *KafkaSubClient {
@@ -97,6 +105,9 @@ func (c *KafkaSubClient) AddSubFunction(topics []string, groupID string, handler
 		Ready:   make(chan bool),
 	}
 
+	// Initialize Trace propagators and use the consumer group handler wrapper propagators := propagation.TraceContext{}
+	cgHandler := otelsarama.WrapConsumerGroupHandler(consumerHandler, otelsarama.WithPropagators(propagation.TraceContext{}))
+
 	ctx, _ := context.WithCancel(context.Background())
 
 	go func() {
@@ -104,7 +115,7 @@ func (c *KafkaSubClient) AddSubFunction(topics []string, groupID string, handler
 			// `Consume` should be called inside an infinite loop, when a
 			// server-side rebalance happens, the consumer session will need to be
 			// recreated to get the new claims
-			if err := consumerGroup.Consume(ctx, topics, consumerHandler); err != nil {
+			if err := consumerGroup.Consume(ctx, topics, cgHandler); err != nil {
 				//zlog.Warn(nil, "Error from consumer: ", err.Error())
 			}
 
@@ -158,40 +169,29 @@ func (c *KafkaConsumerGroup) ConsumeClaim(session sarama.ConsumerGroupSession, c
 }
 
 func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) error {
-	r := reflect.TypeOf(c.handler)
-	handlerName := r.Name()
-	//handlerName := reflect.TypeOf(c.handler).Name()
-	customCtx := CustomCtx{
-		Handle: handlerName,
-		Type:   "kafka",
-		Desc:   message.Topic,
-	}
-	ctx := context.WithValue(c.Client.ctx, CustomCtxKey, customCtx)
+	r := reflect.ValueOf(c.handler)
+	fmt.Println(r.String(), r.Type(), r.Kind())
+
+	carrier := otelsarama.NewConsumerMessageCarrier(message)
+	propagators := propagation.TraceContext{}
+	ctx := propagators.Extract(c.Client.ctx, carrier)
+	propagators.Inject(ctx, otelsarama.NewConsumerMessageCarrier(message))
+
+	spanCtx := trace.SpanContextFromContext(ctx)
 
 	var body KafkaBody
 	if err := json.Unmarshal(message.Value, &body); err == nil {
 		// kafka 消息发送的时候默认包装了一层msg，这里做个兼容。
 		if body.Msg == nil {
 			if err := json.Unmarshal(message.Value, &body.Msg); err != nil {
-				c.log.Warn(ctx, "got unexpected value")
+				c.log.Warn("got unexpected value")
 			}
 		}
 	} else {
 		body.Msg = message.Value
 	}
 
-	ctx = trace.ContextWithSpanContext(ctx, body.SpanContext)
-	tracer := otel.Tracer("uims")
-
-	_, span := tracer.Start(ctx, "kafka_sub/"+message.Topic, trace.WithSpanKind(trace.SpanKindConsumer), trace.WithTimestamp(time.Now()))
-	attrs := []attribute.KeyValue{
-		attribute.String("topic", message.Topic),
-		//attribute.String("key", string(message.Key)),
-		attribute.String("msg", string(body.Msg)),
-		attribute.Int64("offset", message.Offset),
-		attribute.Int64("partition", int64(message.Partition)),
-	}
-	span.SetAttributes(attrs...)
+	ctx = context.Background()
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -200,37 +200,37 @@ func (c *KafkaConsumerGroup) HandleMessage(message *sarama.ConsumerMessage) erro
 			buf = buf[:runtime.Stack(buf, false)]
 
 			info, _ := json.Marshal(map[string]interface{}{
-				"time":   time.Now().Format("2006-01-02 15:04:05"),
-				"level":  "error",
-				"module": "stack",
-				//"requestId": zlog.GetRequestID(ctx),
-				"handle": handlerName,
+				"time":      time.Now().Format("2006-01-02 15:04:05"),
+				"level":     "error",
+				"module":    "stack",
+				"requestId": spanCtx.TraceID().String(),
+				"spanId":    spanCtx.TraceID().String(),
+				"topic":     message.Topic,
+				//"handle": handlerName,
 			})
 			fmt.Printf("%s\n-------------------stack-start-------------------\n%+v\n-------------------stack-end-------------------\n", string(info), r)
 		}
-
-		span.End()
 	}()
 
 	ctx = context.WithValue(ctx, KafkaBodyKey, string(body.Msg))
-
 	err := c.handler(ctx)
-	//if err != nil {
-	//	attrs = append(attrs, attribute.String("error", err.Error()))
-	//}
 
-	// info 日志里打印出partition
-	//.AddNotice(ctx, "partition", message.Partition)
+	attrs := []attribute.KeyValue{
+		attribute.String("topic", message.Topic),
+		attribute.String("key", string(message.Key)),
+		attribute.String("msg", string(body.Msg)),
+		//attribute.Int64("offset", message.Offset),
+		//attribute.Int64("partition", int64(message.Partition)),
+	}
 
-	//ctx.CustomContext.Error = err
-	//ctx.CustomContext.EndTime = time.Now()
-	//middleware.LoggerAfterRun(ctx)
+	if err != nil {
+		attrs = append(attrs, attribute.String("error", err.Error()))
+	}
+
 	return err
 }
 
 func GetKafkaMsg(ctx context.Context) []byte {
 	body := ctx.Value(KafkaBodyKey).(string)
-	//b, err := GetBytes(body)
-	fmt.Println(body)
 	return []byte(body)
 }

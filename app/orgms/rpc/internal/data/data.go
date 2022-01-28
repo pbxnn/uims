@@ -1,17 +1,16 @@
 package data
 
 import (
-	"gorm.io/gorm/schema"
 	"uims/app/orgms/rpc/internal/conf"
-	gp "uims/third_party/gorm_plugin"
+	gp "uims/pkg/gorm_plugin"
 
-	"github.com/Shopify/sarama"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/extra/redisotel"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 // ProviderSet is data providers.
@@ -19,8 +18,6 @@ var ProviderSet = wire.NewSet(
 	NewData,
 	NewDB,
 	NewCache,
-	NewKafkaAsyncProducer,
-	NewKafkaSyncProducer,
 	NewCompanyRepo,
 )
 
@@ -28,18 +25,14 @@ var ProviderSet = wire.NewSet(
 type Data struct {
 	db    *gorm.DB
 	cache *redis.Client
-	kap   sarama.AsyncProducer
-	ksp   sarama.SyncProducer
 }
 
 // NewData .
-func NewData(db *gorm.DB, cache *redis.Client, kap sarama.AsyncProducer, ksp sarama.SyncProducer, logger log.Logger) (*Data, func(), error) {
+func NewData(db *gorm.DB, cache *redis.Client, logger log.Logger) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
-		kap.Close()
-		ksp.Close()
 	}
-	return &Data{db: db, cache: cache, kap: kap, ksp: ksp}, cleanup, nil
+	return &Data{db: db, cache: cache}, cleanup, nil
 }
 
 func NewDB(c *conf.Data, logger log.Logger) *gorm.DB {
@@ -78,29 +71,4 @@ func NewCache(c *conf.Data, logger log.Logger) *redis.Client {
 	cache.AddHook(redisotel.TracingHook{})
 
 	return cache
-}
-
-func NewKafkaAsyncProducer(conf *conf.Data) sarama.AsyncProducer {
-	c := sarama.NewConfig()
-	c.Producer.Return.Successes = false
-	c.Producer.Return.Errors = true
-	p, err := sarama.NewAsyncProducer(conf.Kafka.Addrs, c)
-	if err != nil {
-		panic(err)
-	}
-
-	return p
-}
-
-func NewKafkaSyncProducer(conf *conf.Data) sarama.SyncProducer {
-	c := sarama.NewConfig()
-	c.Producer.Return.Successes = true
-	c.Producer.Return.Errors = true
-
-	p, err := sarama.NewSyncProducer(conf.Kafka.Addrs, c)
-	if err != nil {
-		panic(err)
-	}
-
-	return p
 }

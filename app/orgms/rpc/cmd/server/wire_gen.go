@@ -22,9 +22,7 @@ import (
 func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
 	db := data.NewDB(confData, logger)
 	client := data.NewCache(confData, logger)
-	asyncProducer := data.NewKafkaAsyncProducer(confData)
-	syncProducer := data.NewKafkaSyncProducer(confData)
-	dataData, cleanup, err := data.NewData(db, client, asyncProducer, syncProducer, logger)
+	dataData, cleanup, err := data.NewData(db, client, logger)
 	if err != nil {
 		return nil, nil, err
 	}

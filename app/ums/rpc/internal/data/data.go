@@ -2,8 +2,8 @@ package data
 
 import (
 	"uims/app/ums/rpc/internal/conf"
+	gp "uims/pkg/gorm_plugin"
 	"uims/pkg/kafka"
-	gp "uims/third_party/gorm_plugin"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/extra/redisotel"
