@@ -1,13 +1,16 @@
 package server
 
 import (
+	prom "github.com/go-kratos/kratos/contrib/metrics/prometheus/v2"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"uims/api/orgms/api"
 	"uims/app/orgms/api/internal/conf"
 	"uims/app/orgms/api/internal/service"
+	"uims/pkg/prom_metrics"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -27,8 +30,11 @@ func NewHTTPServer(
 			recovery.Recovery(),
 			tracing.Server(),
 			logging.Server(logger),
-			metrics.Server(),
 			validate.Validator(),
+			metrics.Server(
+				metrics.WithSeconds(prom.NewHistogram(prom_metrics.MetricSeconds)),
+				metrics.WithRequests(prom.NewCounter(prom_metrics.MetricRequests)),
+			),
 		),
 	}
 	if c.Http.Network != "" {
@@ -41,6 +47,7 @@ func NewHTTPServer(
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
+	srv.Handle("/metrics", promhttp.Handler())
 
 	api.RegisterCompanyHTTPServer(srv, companySvc)
 	api.RegisterDepartmentHTTPServer(srv, departmentSvc)

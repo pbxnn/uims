@@ -1,10 +1,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"os"
+	"uims/pkg/prom_metrics"
 
 	"uims/app/orgms/api/internal/conf"
 
@@ -14,7 +19,6 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
@@ -34,6 +38,7 @@ var (
 
 func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	prometheus.MustRegister(prom_metrics.MetricRequests, prom_metrics.MetricSeconds)
 }
 
 func newApp(logger log.Logger, hs *http.Server, rr registry.Registrar) *kratos.App {
@@ -105,8 +110,9 @@ func main() {
 
 // set trace provider
 func setTracerProvider(endpoint string) error {
-	// Create the Jaeger exporter
-	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(endpoint)))
+	exp, err := otlptrace.New(context.Background(), otlptracehttp.NewClient(otlptracehttp.WithEndpoint(endpoint), otlptracehttp.WithInsecure()))
+	//// Create the Jaeger exporter
+	//exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(endpoint)))
 	if err != nil {
 		return err
 	}

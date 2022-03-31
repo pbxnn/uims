@@ -40,7 +40,12 @@ func (s *CompanyService) GetCompanyList(ctx context.Context, req *pb.GetCompanyL
 	return &pb.GetCompanyListReply{}, nil
 }
 func (s *CompanyService) GetCompany(ctx context.Context, req *pb.GetCompanyReq) (*pb.GetCompanyReply, error) {
-	return &pb.GetCompanyReply{}, nil
+	resp := &pb.GetCompanyReply{
+		Data: &pb.CompanyInfo{
+			CompanyId: req.CompanyId,
+		},
+	}
+	return resp, nil
 }
 func (s *CompanyService) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyReq) (*pb.UpdateCompanyReply, error) {
 	return &pb.UpdateCompanyReply{}, nil
